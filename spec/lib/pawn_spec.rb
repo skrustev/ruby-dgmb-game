@@ -12,7 +12,7 @@ describe 'Pawn' do
   its(:is_finished) { should eq(false) }
   its(:can_be_moved) { should eq(false) }
 
-  it "can't be activated " do
+  it "can be activated " do
     pawn.activate("1:3")
 
     expect(pawn.pos).to eq("1:3")
@@ -23,7 +23,7 @@ describe 'Pawn' do
     expect(pawn.can_be_moved).to eq(true)
   end
 
-  it "can't be moved" do
+  it "can be moved" do
     pawn.activate("1:3")
     pawn.move("4:5")
     
@@ -35,7 +35,7 @@ describe 'Pawn' do
     expect(pawn.can_be_moved).to eq(true)
   end
 
-  it "can't be destroyed" do
+  it "can be destroyed" do
     pawn.activate("1:3")
     pawn.move("4:5")
     pawn.destroy
@@ -45,7 +45,7 @@ describe 'Pawn' do
     expect(pawn.can_be_moved).to eq(false)
   end
 
-  it "can't finish" do
+  it "can finish" do
     pawn.activate("1:3")
     pawn.move("4:5")
     pawn.destroy
