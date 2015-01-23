@@ -1,12 +1,12 @@
 class Pawn 
-  attr_reader :name, :player_name, :pos, :original_pos, 
+  attr_reader :name, :player_name, :pos, :initial_pos, 
               :is_active, :is_finished, :can_be_moved
 
-  def initialize(name = nil, player_name = nil, initial_pos = "0:0")
+  def initialize(name = nil, player_name = nil, initial_pos = [0,0])
     @name = name;
     @player_name = player_name
-    @original_pos = initial_pos
-    @pos = @original_pos
+    @initial_pos = initial_pos
+    @pos = @initial_pos
     @is_active = false
     @is_finished = false
     @can_be_moved = false
@@ -23,7 +23,7 @@ class Pawn
   end
 
   def destroy
-    @pos = original_pos
+    @pos = initial_pos
     @is_active = false
     @can_be_moved = false
   end
