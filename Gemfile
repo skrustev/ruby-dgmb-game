@@ -4,4 +4,5 @@ gem "rspec"
 gem 'rspec-its'
 gem "guard"
 gem "guard-rspec"
+gem 'tty'
 gem "gosu"
