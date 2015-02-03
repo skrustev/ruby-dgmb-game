@@ -1,4 +1,4 @@
-require 'pawn'
+require_relative 'pawn'
 
 class Player
   attr_reader :name, :color, :initial_pos, :start_pos,
@@ -21,16 +21,16 @@ class Player
 
   def determine_positions(color)
     case color
-    when "black"  then @start_pos, @initial_pos = [0, 5],  [[0,0], [0,1], [1,0], [1,1]]                 
-    when "yellow" then @start_pos, @initial_pos = [7, 0],  [[10,0], [10,1], [11,0], [11,1]]
-    when "green"  then @start_pos, @initial_pos = [11, 7], [[11,10], [10,10], [11,11], [10, 11]]
-    when "red"    then @start_pos, @initial_pos = [5, 11], [[1,11], [1, 10], [0,10], [0,11]]
+    when "blue"  then @start_pos, @initial_pos = [0, 4],  [[0,0], [0,1], [1,0], [1,1]]                 
+    when "yellow" then @start_pos, @initial_pos = [6, 0],  [[9,0], [9,1], [10,0], [10,1]]
+    when "green"  then @start_pos, @initial_pos = [10, 6], [[9,9], [9,10], [10,9], [10, 10]]
+    when "red"    then @start_pos, @initial_pos = [4, 10], [[0,9], [0, 10], [1,9], [1,10]]
     end
   end
 
   def create_pawns
-    [1,2,3,4].each do |index|
-      @pawns[:"pawn#{index}"] = Pawn.new("p:#{@color[0]}:#{index}", @name, @initial_pos[index])
+    [0,1,2,3].each do |index|
+      @pawns[:"#{@color[0]}:#{index}"] = Pawn.new("#{@color[0]}:#{index}", @name, @initial_pos[index])
     end
   end
   

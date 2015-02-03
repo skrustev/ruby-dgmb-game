@@ -2,7 +2,7 @@ class Pawn
   attr_reader :name, :player_name, :pos, :initial_pos, 
               :is_active, :is_finished, :can_be_moved
 
-  def initialize(name = nil, player_name = nil, initial_pos = [0,0])
+  def initialize(name = nil, player_name = nil, initial_pos = [-1,-1])
     @name = name;
     @player_name = player_name
     @initial_pos = initial_pos
@@ -33,5 +33,15 @@ class Pawn
     @is_active = false
     @is_finished = true
     @can_be_moved = false
+  end
+
+  def ==(other_pawn)
+    if(@name == other_pawn.name && @player_name == other_pawn.player_name &&
+        @initial_pos == other_pawn.initial_pos && @pos == other_pawn.pos &&
+        @is_active == other_pawn.is_active && @is_finished == other_pawn.is_finished)
+      true
+    else
+      false
+    end
   end
 end
