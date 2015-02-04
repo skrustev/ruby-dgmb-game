@@ -33,6 +33,28 @@ class GameMode
   end
 
   def select_pawn(name)
-    @players[:"#{@turn}"].pawns[:"#{name}"]
+    player_this_turn = @players[:"#{@turn}"]
+
+    if(player_this_turn.pawns[:"#{name}" == nil])
+      nil
+    elsif(player_this_turn.last_roll != 6)
+      nil
+    else
+      @selected_pawn = player_this_turn.pawns[:"#{name}"]
+    end
   end
+
+  def activate_pawn
+    if(@selected_pawn.name)
+      pawn_pos = @selected_pawn.pos
+      start_pos = @players[:"#{@turn}"].start_pos
+
+      @players[:"#{@turn}"].activate_pawn(@selected_pawn.name)
+      @board[pawn_pos[0]][pawn_pos[1]] = ""
+      @board[start_pos[0]][start_pos[1]] = @selected_pawn.name
+    else
+      puts "Please select a pawn"
+    end
+  end
+
 end

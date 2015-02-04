@@ -8,7 +8,7 @@ describe 'Player' do
   its(:color) { should eq("color") }
   its(:active_pawns) { should eq(0) }
   its(:finished_pawns) { should eq(0) }
-  its(:last_roll) { should eq([0, 0])}
+  its(:last_roll) { should eq(0)}
   
   context "blue colored player " do
     let(:blue_player) { Player.new("Player", "blue") }
@@ -34,6 +34,35 @@ describe 'Player' do
       
       expect(blue_player.pawns[:"b:3"].name).to eq("b:3")
       expect(blue_player.pawns[:"b:3"].pos).to eq(blue_pos[3])
+    end
+
+    it "can activate pawn" do
+      blue_player.activate_pawn("b:1")
+
+      expect(blue_player.pawns[:"b:1"].pos).to eq(blue_player.start_pos)
+      expect(blue_player.active_pawns).to eq(1)
+
+      blue_player.activate_pawn("b:3")
+      expect(blue_player.pawns[:"b:3"].pos).to eq(blue_player.start_pos)
+      expect(blue_player.active_pawns).to eq(2)
+    end
+
+    it "can finish pawns" do
+      blue_player.activate_pawn("b:3")
+      blue_player.activate_pawn("b:1")
+      blue_player.finish_pawn("b:3")
+
+      expect(blue_player.active_pawns).to eq(1)
+      expect(blue_player.finished_pawns).to eq(1)
+      expect(blue_player.pawns[:"b:3"].pos).to eq([-1,-1])
+      expect(blue_player.pawns[:"b:1"].pos).to eq(blue_player.start_pos)
+
+      blue_player.finish_pawn("b:1")
+
+      expect(blue_player.active_pawns).to eq(0)
+      expect(blue_player.finished_pawns).to eq(2)
+      expect(blue_player.pawns[:"b:1"].pos).to eq([-1,-1])
+
     end
   end
 

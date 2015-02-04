@@ -1,8 +1,9 @@
 require_relative 'pawn'
 
 class Player
+  attr_accessor :last_roll
   attr_reader :name, :color, :initial_pos, :start_pos,
-              :active_pawns, :finished_pawns, :last_roll,
+              :active_pawns, :finished_pawns,
               :pawns
 
   def initialize(name = nil, color = nil)
@@ -12,7 +13,7 @@ class Player
     @start_pos = []
     @active_pawns = 0
     @finished_pawns = 0
-    @last_roll = [0, 0]
+    @last_roll = 0
     @pawns = {}
 
     determine_positions(@color)
@@ -35,6 +36,17 @@ class Player
   end
   
   def roll_dice
-    1 + rand(6)
+    @last_roll = 1 + rand(6)
+  end
+
+  def activate_pawn(pawn_name)
+    pawns[:"#{pawn_name}"].activate(start_pos)
+    @active_pawns += 1
+  end
+
+  def finish_pawn(pawn_name)
+    pawns[:"#{pawn_name}"].finish([-1, -1])
+    @active_pawns -= 1
+    @finished_pawns += 1
   end
 end
