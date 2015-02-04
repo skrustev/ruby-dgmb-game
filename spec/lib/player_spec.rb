@@ -47,6 +47,19 @@ describe 'Player' do
       expect(blue_player.active_pawns).to eq(2)
     end
 
+    it "can move pawn" do
+      blue_player.activate_pawn("b:1")
+
+
+      blue_player.move_pawn("b:1", 4)
+      expect(blue_player.pawns[:"b:1"].pos).to eq([4, 4])
+      expect(blue_player.pawns[:"b:1"].path_pos).to eq(4)
+
+      blue_player.move_pawn("b:1", 5)
+      expect(blue_player.pawns[:"b:1"].pos).to eq([5, 0])
+      expect(blue_player.pawns[:"b:1"].path_pos).to eq(9)
+    end
+
     it "can finish pawns" do
       blue_player.activate_pawn("b:3")
       blue_player.activate_pawn("b:1")
@@ -90,6 +103,48 @@ describe 'Player' do
       
       expect(yellow_player.pawns[:"y:3"].name).to eq("y:3")
       expect(yellow_player.pawns[:"y:3"].pos).to eq(yellow_pos[3])
+    end
+
+    it "can activate pawn" do
+      yellow_player.activate_pawn("y:1")
+
+      expect(yellow_player.pawns[:"y:1"].pos).to eq(yellow_player.start_pos)
+      expect(yellow_player.active_pawns).to eq(1)
+
+      yellow_player.activate_pawn("y:3")
+      expect(yellow_player.pawns[:"y:3"].pos).to eq(yellow_player.start_pos)
+      expect(yellow_player.active_pawns).to eq(2)
+    end
+
+    it "can move pawn" do
+      yellow_player.activate_pawn("y:1")
+
+
+      yellow_player.move_pawn("y:1", 4)
+      expect(yellow_player.pawns[:"y:1"].pos).to eq([6, 4])
+      expect(yellow_player.pawns[:"y:1"].path_pos).to eq(4)
+
+      yellow_player.move_pawn("y:1", 5)
+      expect(yellow_player.pawns[:"y:1"].pos).to eq([10, 5])
+      expect(yellow_player.pawns[:"y:1"].path_pos).to eq(9)
+    end
+
+    it "can finish pawns" do
+      yellow_player.activate_pawn("y:3")
+      yellow_player.activate_pawn("y:1")
+      yellow_player.finish_pawn("y:3")
+
+      expect(yellow_player.active_pawns).to eq(1)
+      expect(yellow_player.finished_pawns).to eq(1)
+      expect(yellow_player.pawns[:"y:3"].pos).to eq([-1,-1])
+      expect(yellow_player.pawns[:"y:1"].pos).to eq(yellow_player.start_pos)
+
+      yellow_player.finish_pawn("y:1")
+
+      expect(yellow_player.active_pawns).to eq(0)
+      expect(yellow_player.finished_pawns).to eq(2)
+      expect(yellow_player.pawns[:"y:1"].pos).to eq([-1,-1])
+
     end
   end
 
