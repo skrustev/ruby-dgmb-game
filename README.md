@@ -3,23 +3,19 @@ Don't Get Mad Bro
 
 A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽ᕗ
 
-**Note:** Currently the game is in development state and not playable
+*Note: Currently the game is in development state and NOT playable*
 
-**To do:**
-> * Add support for multiple pawns of one team at a the same position
-
-> * Win event
-
-> * Restart game event
-
-> * Graphic interface of the game
-
-> * Console interface of the game
+##To do:
+* [ ] Add support for multiple pawns of one team at a the same position
+* [ ] Win event
+* [ ] Restart game event
+* [ ] Graphic interface of the game
+* [ ] Console interface of the game
 
 ## How To Play
 
 1. Download and install latest ruby from their site:
-	http://rubyinstaller.org/
+  http://rubyinstaller.org/
 
 2. Clone this repo in a desired folder
 
@@ -29,15 +25,13 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 	```
 	bundle
 	```
-5. To start the game either use:
+5. To start the game use:
 
 	```
 	ruby game.rb
 	```
 
----
-
-###Used gems:
+##Used gems:
 
 > [RSpec](https://github.com/rspec/rspec)
 
