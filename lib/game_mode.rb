@@ -35,7 +35,6 @@ class GameMode
   def select_pawn(pawn_name)
     player_this_turn = @players[:"#{@turn}"]
 
-    #check if the current player in turn has such pawn
     if(player_this_turn.pawns.include?(:"#{pawn_name}") == false)
       return "Cannot select enemy pawn!"
     else
@@ -44,13 +43,10 @@ class GameMode
 
     roll_to_finish = player_this_turn.path.size - pawn_to_select.path_pos - 1
 
-    #check if the desired pawn is not active and the roll is not 6
     if(player_this_turn.last_roll != 6 && !pawn_to_select.is_active)
       return "Cannot select this pawn. You need to roll 6!"
-    #check if pawn is in the zone to the finish and the roll is too much
     elsif(pawn_to_select.is_active && pawn_to_select.path_pos >= 40 && roll_to_finish < player_this_turn.last_roll)
       return "You need to roll #{roll_to_finish} to use this pawn"
-    #all passed and this pawn can be selected
     else
       @selected_pawn = pawn_to_select
     end
@@ -61,13 +57,8 @@ class GameMode
       pawn_pos = @selected_pawn.pos
       start_pos = @players[:"#{@turn}"].start_pos
 
-      #remove old record of pawn from board
       @board[pawn_pos[0]][pawn_pos[1]] = ""
-
-      #update pawn position
       @players[:"#{@turn}"].activate_pawn(@selected_pawn.name)
-
-      #update board with new pawn position
       @board[start_pos[0]][start_pos[1]] = @selected_pawn.name
       
     else
@@ -77,25 +68,26 @@ class GameMode
 
   def move_pawn
     pawn_pos = @selected_pawn.pos
-
-    #remove old record for pawn from board
-    @board[pawn_pos[0]][pawn_pos[1]] = ""
-
-    #update pawn position
     player_this_turn = @players[:"#{@turn}"]
+
+    @board[pawn_pos[0]][pawn_pos[1]] = ""
     player_this_turn.move_pawn(@selected_pawn.name, player_this_turn.last_roll)
 
-    #check if this pawn just finished
+    handle_if_pawn_finished
+    next_turn
+  end
+
+  def handle_if_pawn_finished
     pawn_new_pos = @selected_pawn.pos
+    player_this_turn = @players[:"#{@turn}"]
+
     if(pawn_new_pos == [5, 5])
-      #finish pawn if in the finish zone
+      puts
+      puts "Pawn #{@selected_pawn.name} finished"
       player_this_turn.finish_pawn(@selected_pawn.name)
     else
-      #update board with new pawn position
       @board[pawn_new_pos[0]][pawn_new_pos[1]] = @selected_pawn.name
     end
-
-    next_turn
   end
 
   def destroy_pawn(pawn_name, at_position)
