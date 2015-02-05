@@ -75,7 +75,35 @@ describe 'Player' do
       expect(blue_player.active_pawns).to eq(0)
       expect(blue_player.finished_pawns).to eq(2)
       expect(blue_player.pawns[:"b:1"].pos).to eq([-1,-1])
+    end
 
+    it "can get destroy active pawn" do
+      blue_player.activate_pawn("b:1")
+      blue_player.move_pawn("b:1", 4)
+      blue_player.move_pawn("b:1", 5)
+
+      blue_player.destroy_pawn("b:1")
+      expect(blue_player.active_pawns).to eq(0)
+      expect(blue_player.pawns[:"b:1"].pos).to eq([0, 1])
+      expect(blue_player.pawns[:"b:1"].path_pos).to eq(-1)
+    end
+
+    it "cannot destroy inactive pawn again" do
+      blue_player.destroy_pawn("b:1")
+      expect(blue_player.active_pawns).to eq(0)
+      expect(blue_player.pawns[:"b:1"].pos).to eq([0, 1])
+      expect(blue_player.pawns[:"b:1"].path_pos).to eq(-1)
+    end
+
+    it "cannot destroy finished pawn" do
+      blue_player.activate_pawn("b:3")
+      blue_player.finish_pawn("b:3")
+
+      blue_player.destroy_pawn("b:3")
+      expect(blue_player.active_pawns).to eq(0)
+      expect(blue_player.finished_pawns).to eq(1)
+      expect(blue_player.pawns[:"b:3"].pos).to eq([-1, -1])
+      expect(blue_player.pawns[:"b:3"].path_pos).to eq(-1)
     end
   end
 

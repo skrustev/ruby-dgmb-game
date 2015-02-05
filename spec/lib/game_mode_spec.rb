@@ -18,7 +18,7 @@ describe 'GameMode' do
                             ["", "", "", "", "", "" , "", "", "", "", ""],
                             ["", "", "", "", "", "" , "", "", "", "", ""],
                             ["", "", "", "", "", "" , "", "", "", "", ""],
-                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                            ["", "", "", "", "", "X" , "", "", "", "", ""],
                             ["", "", "", "", "", "" , "", "", "", "", ""],
                             ["", "", "", "", "", "" , "", "", "", "", ""],
                             ["", "", "", "", "", "" , "", "", "", "", ""],
@@ -73,27 +73,27 @@ describe 'GameMode' do
     let(:blue_turn) { GameMode.new("player1", players) }
 
     it "cannot select red pawns " do
-      expect(blue_turn.select_pawn("r:0")).to eq(nil)
-      expect(blue_turn.select_pawn("r:1")).to eq(nil)
-      expect(blue_turn.select_pawn("r:2")).to eq(nil)
-      expect(blue_turn.select_pawn("r:3")).to eq(nil)
+      expect(blue_turn.select_pawn("r:0")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("r:1")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("r:2")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("r:3")).to eq("Cannot select enemy pawn!")
     end
 
     it "cannot select green pawns " do
-      expect(blue_turn.select_pawn("g:0")).to eq(nil)
-      expect(blue_turn.select_pawn("g:1")).to eq(nil)
-      expect(blue_turn.select_pawn("g:2")).to eq(nil)
-      expect(blue_turn.select_pawn("g:3")).to eq(nil)
+      expect(blue_turn.select_pawn("g:0")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("g:1")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("g:2")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("g:3")).to eq("Cannot select enemy pawn!")
     end
 
     it "cannot select yellow pawns " do
-      expect(blue_turn.select_pawn("y:0")).to eq(nil)
-      expect(blue_turn.select_pawn("y:1")).to eq(nil)
-      expect(blue_turn.select_pawn("y:2")).to eq(nil)
-      expect(blue_turn.select_pawn("y:3")).to eq(nil)
+      expect(blue_turn.select_pawn("y:0")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("y:1")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("y:2")).to eq("Cannot select enemy pawn!")
+      expect(blue_turn.select_pawn("y:3")).to eq("Cannot select enemy pawn!")
     end
 
-    it "can select non active pawns when rolled 6" do
+    it "can select 4 non active pawns when rolled 6" do
       player1.last_roll = 6
 
       expect(blue_turn.select_pawn("b:0")).to eq(player1.pawns[:"b:0"])
@@ -102,20 +102,24 @@ describe 'GameMode' do
       expect(blue_turn.select_pawn("b:3")).to eq(player1.pawns[:"b:3"])
     end
 
-    it "cannot select non active pawns when not rolled 6" do
+    it "cannot select 4 non active pawns when not rolled 6" do
+      expect(blue_turn.turn).to eq("player1")
       player1.last_roll = 3
 
-      expect(blue_turn.select_pawn("b:0")).to eq(nil)
-      expect(blue_turn.select_pawn("b:1")).to eq(nil)
-      expect(blue_turn.select_pawn("b:2")).to eq(nil)
-      expect(blue_turn.select_pawn("b:3")).to eq(nil)
+      expect(blue_turn.select_pawn("b:0")).to eq("Cannot select this pawn. You need to roll 6!")
+      expect(blue_turn.select_pawn("b:1")).to eq("Cannot select this pawn. You need to roll 6!")
+      expect(blue_turn.select_pawn("b:2")).to eq("Cannot select this pawn. You need to roll 6!")
+      expect(blue_turn.select_pawn("b:3")).to eq("Cannot select this pawn. You need to roll 6!")
     end
 
-    it "can activate pawn" do
+    it "can activate pawn 1" do
       player1.last_roll = 6
       
+
+      expect(blue_turn.players[:"player1"].pawns[:"b:1"].is_active).to eq(false)
       blue_turn.select_pawn("b:1")
-      expect(blue_turn.selected_pawn.name).to eq("b:1")
+      expect(blue_turn.selected_pawn).to eq(player1.pawns[:"b:1"])
+      expect(blue_turn.selected_pawn.pos).to eq([0, 1])
 
       blue_turn.activate_pawn
       expect(blue_turn.board).to eq([ ["b:0", "", "", "", "b:1", "" , "", "", "", "r:0", "r:1"],
@@ -123,214 +127,163 @@ describe 'GameMode' do
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
-                                      ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])      
-    end
-
-    it "can move pawn to any place" do
-
-    end
-
-
-  end
-
-  context "yellow " do
-    let(:yellow_turn) { GameMode.new("player2", players) }
-
-    it "cannot select red pawns " do
-      expect(yellow_turn.select_pawn("r:0")).to eq(nil)
-      expect(yellow_turn.select_pawn("r:1")).to eq(nil)
-      expect(yellow_turn.select_pawn("r:2")).to eq(nil)
-      expect(yellow_turn.select_pawn("r:3")).to eq(nil)
-    end
-
-    it "cannot select green pawns " do
-      expect(yellow_turn.select_pawn("g:0")).to eq(nil)
-      expect(yellow_turn.select_pawn("g:1")).to eq(nil)
-      expect(yellow_turn.select_pawn("g:2")).to eq(nil)
-      expect(yellow_turn.select_pawn("g:3")).to eq(nil)
-    end
-
-    it "cannot select blue pawns " do
-      expect(yellow_turn.select_pawn("b:0")).to eq(nil)
-      expect(yellow_turn.select_pawn("b:1")).to eq(nil)
-      expect(yellow_turn.select_pawn("b:2")).to eq(nil)
-      expect(yellow_turn.select_pawn("b:3")).to eq(nil)
-        
-    end
-
-    it "can select non active pawns when rolled 6" do
-      player2.last_roll = 6
-
-      expect(yellow_turn.select_pawn("y:0")).to eq(player2.pawns[:"y:0"])
-      expect(yellow_turn.select_pawn("y:1")).to eq(player2.pawns[:"y:1"])
-      expect(yellow_turn.select_pawn("y:2")).to eq(player2.pawns[:"y:2"])
-      expect(yellow_turn.select_pawn("y:3")).to eq(player2.pawns[:"y:3"])
-    end
-
-    it "cannot select non active pawns when not rolled 6" do
-      player2.last_roll = 2
-
-      expect(yellow_turn.select_pawn("y:0")).to eq(nil)
-      expect(yellow_turn.select_pawn("y:1")).to eq(nil)
-      expect(yellow_turn.select_pawn("y:2")).to eq(nil)
-      expect(yellow_turn.select_pawn("y:3")).to eq(nil)
-    end
-
-    it "can activate pawn" do
-      player2.last_roll = 6
-
-      yellow_turn.select_pawn("y:1")
-      expect(yellow_turn.selected_pawn.name).to eq("y:1")
-
-      yellow_turn.activate_pawn
-      expect(yellow_turn.board).to eq([ ["b:0", "b:1", "", "", "", "" , "", "", "", "r:0", "r:1"],
-                                      ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["y:1", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["y:0", "", "", "", "", "" , "", "", "", "g:0", "g:1"],
-                                      ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])      
-    end
-
-    it "can move pawn to any place" do
-
-    end
-  end
-
-  context "green " do
-    let(:green_turn) { GameMode.new("player3", players) }
-
-    it "cannot select red pawns " do
-      expect(green_turn.select_pawn("r:0")).to eq(nil)
-      expect(green_turn.select_pawn("r:1")).to eq(nil)
-      expect(green_turn.select_pawn("r:2")).to eq(nil)
-      expect(green_turn.select_pawn("r:3")).to eq(nil)
-    end
-
-    it "cannot select yellow pawns " do
-      expect(green_turn.select_pawn("y:0")).to eq(nil)
-      expect(green_turn.select_pawn("y:1")).to eq(nil)
-      expect(green_turn.select_pawn("y:2")).to eq(nil)
-      expect(green_turn.select_pawn("y:3")).to eq(nil)
-    end
-
-    it "cannot select blue pawns " do
-      expect(green_turn.select_pawn("b:0")).to eq(nil)
-      expect(green_turn.select_pawn("b:1")).to eq(nil)
-      expect(green_turn.select_pawn("b:2")).to eq(nil)
-      expect(green_turn.select_pawn("b:3")).to eq(nil)      
-    end
-
-    it "can select non active pawns when rolled 6" do
-      player3.last_roll = 6
-
-      expect(green_turn.select_pawn("g:0")).to eq(player3.pawns[:"g:0"])
-      expect(green_turn.select_pawn("g:1")).to eq(player3.pawns[:"g:1"])
-      expect(green_turn.select_pawn("g:2")).to eq(player3.pawns[:"g:2"])
-      expect(green_turn.select_pawn("g:3")).to eq(player3.pawns[:"g:3"])
-    end
-
-    it "cannot select non active pawns when not rolled 6" do
-      player3.last_roll = 5
-
-      expect(green_turn.select_pawn("g:0")).to eq(nil)
-      expect(green_turn.select_pawn("g:1")).to eq(nil)
-      expect(green_turn.select_pawn("g:2")).to eq(nil)
-      expect(green_turn.select_pawn("g:3")).to eq(nil)
-    end
-
-    it "can activate pawn" do
-      player3.last_roll = 6
-
-      green_turn.select_pawn("g:1")
-      expect(green_turn.selected_pawn.name).to eq("g:1")
-
-      green_turn.activate_pawn
-      expect(green_turn.board).to eq([ ["b:0", "b:1", "", "", "", "" , "", "", "", "r:0", "r:1"],
-                                      ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", ""],
-                                      ["y:2", "y:3", "", "", "", "" , "g:1", "", "", "g:2", "g:3"]])      
-    end
-  end
-
-  context "red " do
-    let(:red_turn) { GameMode.new("player4", players) }
-
-    it "cannot select yellow pawns " do
-      expect(red_turn.select_pawn("y:0")).to eq(nil)
-      expect(red_turn.select_pawn("y:1")).to eq(nil)
-      expect(red_turn.select_pawn("y:2")).to eq(nil)
-      expect(red_turn.select_pawn("y:3")).to eq(nil)
-    end
-
-    it "cannot select green pawns " do
-      expect(red_turn.select_pawn("g:0")).to eq(nil)
-      expect(red_turn.select_pawn("g:1")).to eq(nil)
-      expect(red_turn.select_pawn("g:2")).to eq(nil)
-      expect(red_turn.select_pawn("g:3")).to eq(nil)
-    end
-
-    it "cannot select blue pawns " do
-      expect(red_turn.select_pawn("b:0")).to eq(nil)
-      expect(red_turn.select_pawn("b:1")).to eq(nil)
-      expect(red_turn.select_pawn("b:2")).to eq(nil)
-      expect(red_turn.select_pawn("b:3")).to eq(nil)
-        
-      end
-
-    it "can select non active pawns when rolled 6" do
-      player4.last_roll = 6
-
-      expect(red_turn.select_pawn("r:0")).to eq(player4.pawns[:"r:0"])
-      expect(red_turn.select_pawn("r:1")).to eq(player4.pawns[:"r:1"])
-      expect(red_turn.select_pawn("r:2")).to eq(player4.pawns[:"r:2"])
-      expect(red_turn.select_pawn("r:3")).to eq(player4.pawns[:"r:3"])
-    end
-
-    it "cannot select non active pawns when not rolled 6" do
-      player4.last_roll = 4
-
-      expect(red_turn.select_pawn("r:0")).to eq(nil)
-      expect(red_turn.select_pawn("r:1")).to eq(nil)
-      expect(red_turn.select_pawn("r:2")).to eq(nil)
-      expect(red_turn.select_pawn("r:3")).to eq(nil)
-    end
-
-    it "can activate pawn" do
-      player4.last_roll = 6
-
-      red_turn.select_pawn("r:1")
-      expect(red_turn.selected_pawn.name).to eq("r:1")
-
-      red_turn.activate_pawn
-      expect(red_turn.board).to eq([ ["b:0", "b:1", "", "", "", "" , "", "", "", "r:0", ""],
-                                      ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
-                                      ["", "", "", "", "", "" , "", "", "", "", "r:1"],
-                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "X" , "", "", "", "", ""],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
                                       ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
-                                      ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])      
+                                      ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+
+      expect(blue_turn.selected_pawn.pos).to eq([0, 4])
+      blue_turn.destroy_pawn("b:1", [0, 4])
+    end
+
+    it "can activate pawn 2" do
+      player1.last_roll = 6
+      
+      blue_turn.select_pawn("b:2")
+      expect(blue_turn.selected_pawn.name).to eq("b:2")
+      expect(blue_turn.selected_pawn.pos).to eq([1, 0])
+
+      blue_turn.activate_pawn
+      expect(blue_turn.board).to eq([ ["b:0", "b:1", "", "", "b:2", "" , "", "", "", "r:0", "r:1"],
+                                      ["", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
+                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["", "", "", "", "", "" , "", "", "", "", ""],
+                                      ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                      ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+
+      expect(blue_turn.selected_pawn.pos).to eq([0, 4])
+      blue_turn.destroy_pawn("b:2", [0, 4])
+    end
+
+    it "can select only 1 active pawn and not 3 non active" do
+      player1.last_roll = 6
+      expect(blue_turn.select_pawn("b:1")).to eq(player1.pawns[:"b:1"])
+      blue_turn.activate_pawn
+
+      player1.last_roll = 4
+
+      expect(blue_turn.select_pawn("b:0")).to eq("Cannot select this pawn. You need to roll 6!")
+      expect(blue_turn.select_pawn("b:1")).to eq(player1.pawns[:"b:1"])
+      expect(blue_turn.select_pawn("b:2")).to eq("Cannot select this pawn. You need to roll 6!")
+      expect(blue_turn.select_pawn("b:3")).to eq("Cannot select this pawn. You need to roll 6!")
+      blue_turn.destroy_pawn("b:1", [0, 4])
+    end
+
+    it "can destroy pawn at position" do
+      player1.last_roll = 6
+      blue_turn.select_pawn("b:0")
+      expect(blue_turn.selected_pawn.pos).to eq([0, 0])
+
+      blue_turn.activate_pawn
+      expect(blue_turn.selected_pawn.pos).to eq([0, 4])
+
+      blue_turn.destroy_pawn("b:0", [0, 4])
+      expect(blue_turn.selected_pawn.pos).to eq([0, 0])
+    end
+
+    it "can move pawn" do
+      player1.last_roll = 6
+      blue_turn.select_pawn("b:1")
+      expect(blue_turn.selected_pawn.pos).to eq([0, 1])
+
+      blue_turn.activate_pawn
+      expect(blue_turn.selected_pawn.pos).to eq([0, 4])
+
+      player1.last_roll = 4
+      blue_turn.select_pawn("b:1")
+      expect(blue_turn.selected_pawn.pos).to eq([0, 4])
+      blue_turn.move_pawn
+      expect(blue_turn.selected_pawn.pos).to eq([4, 4])
+      expect(blue_turn.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "r:0", "r:1"],
+                                ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "b:1", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+      expect(blue_turn.turn).to eq("player2")
+
+      blue_turn.override_turn("player1")
+      player1.last_roll = 6
+      blue_turn.select_pawn("b:1")
+      expect(blue_turn.selected_pawn.pos).to eq([4, 4])
+      blue_turn.move_pawn
+      expect(blue_turn.selected_pawn.pos).to eq([6, 0])
+      expect(blue_turn.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "r:0", "r:1"],
+                                ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                ["b:1", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+      expect(blue_turn.turn).to eq("player2")
+
+      blue_turn.destroy_pawn("b:1", [6, 0])
+    end
+
+    it "can/cannot finish pawn" do
+      player1.last_roll = 6
+      blue_turn.select_pawn("b:2")
+      expect(blue_turn.selected_pawn.name).to eq("b:2")
+      expect(blue_turn.selected_pawn.pos).to eq([1, 0])
+
+
+      blue_turn.select_pawn("b:0")
+      blue_turn.activate_pawn
+      expect(blue_turn.selected_pawn.pos).to eq([0, 4])
+
+      [1, 2, 3, 4, 5, 6, 7, 8].each do
+        blue_turn.override_turn("player1")
+        player1.last_roll = 5
+        blue_turn.select_pawn("b:0")
+        blue_turn.move_pawn
+      end     
+      expect(blue_turn.selected_pawn.pos).to eq([1, 5])
+
+      #should roll exactly 4
+      #roll > 4
+      blue_turn.override_turn("player1")
+      player1.last_roll = 6
+      blue_turn.select_pawn("b:0")
+      
+      expect(blue_turn.select_pawn("b:0")).to eq("You need to roll 4 to use this pawn")
+
+      #roll 4
+      blue_turn.override_turn("player1")
+      player1.last_roll = 4
+      expect(blue_turn.select_pawn("b:0")).to eq(player1.pawns[:"b:0"])
+      blue_turn.move_pawn
+
+      expect(blue_turn.selected_pawn.is_active).to eq(false)
+      expect(blue_turn.selected_pawn.is_finished).to eq(true)
+      expect(blue_turn.board).to eq([ ["", "b:1", "", "", "", "" , "", "", "", "r:0", "r:1"],
+                                ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["", "", "", "", "", "" , "", "", "", "", ""],
+                                ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+
+
     end
   end
-
 end

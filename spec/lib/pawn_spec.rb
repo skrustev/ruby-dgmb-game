@@ -4,6 +4,7 @@ require 'pawn'
 describe 'Pawn' do
   subject(:pawn) { Pawn.new("name", "player", [7,6]) }
 
+
   its(:name) { should eq("name")}
   its(:player_name) { should eq("player") }
   its(:pos) { should eq([7,6])}
@@ -62,5 +63,20 @@ describe 'Pawn' do
     expect(pawn.is_active).to eq(false)
     expect(pawn.is_finished).to eq(true)
     expect(pawn.can_be_moved).to eq(false)
+  end
+
+  context "can compare" do
+    subject(:pawn1) { Pawn.new("b:1", "player2", [2,6]) }
+    subject(:pawn2) { Pawn.new("b:1", "player2", [2,6]) }
+    subject(:pawn3) { Pawn.new("b:2", "player2", [4,6]) }
+
+    it "similar pawns" do
+      expect(pawn1 == pawn2).to eq(true)
+    end
+
+    it "different pawns" do
+      expect(pawn1 == pawn3).to eq(false)
+      expect(pawn2 == pawn3).to eq(false)
+    end
   end
 end 
