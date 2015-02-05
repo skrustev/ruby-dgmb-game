@@ -52,7 +52,7 @@ class GameMode
     end
   end
 
-  def activate_pawn
+  def activate_selected_pawn
     if(@selected_pawn.name)
       pawn_pos = @selected_pawn.pos
       start_pos = @players[:"#{@turn}"].start_pos
@@ -66,28 +66,19 @@ class GameMode
     end
   end
 
-  def move_pawn
+  def move_selected_pawn
     pawn_pos = @selected_pawn.pos
     player_this_turn = @players[:"#{@turn}"]
 
-    @board[pawn_pos[0]][pawn_pos[1]] = ""
-    player_this_turn.move_pawn(@selected_pawn.name, player_this_turn.last_roll)
+    if @selected_pawn.is_active
+      @board[pawn_pos[0]][pawn_pos[1]] = ""
+      player_this_turn.move_pawn(@selected_pawn.name, player_this_turn.last_roll)
+    else
+      return "You need to activate this pawn first"
+    end
 
     handle_if_pawn_finished
-    next_turn
-  end
-
-  def handle_if_pawn_finished
-    pawn_new_pos = @selected_pawn.pos
-    player_this_turn = @players[:"#{@turn}"]
-
-    if(pawn_new_pos == [5, 5])
-      puts
-      puts "Pawn #{@selected_pawn.name} finished"
-      player_this_turn.finish_pawn(@selected_pawn.name)
-    else
-      @board[pawn_new_pos[0]][pawn_new_pos[1]] = @selected_pawn.name
-    end
+    handle_next_turn
   end
 
   def destroy_pawn(pawn_name, at_position)
@@ -99,13 +90,45 @@ class GameMode
                   end
 
     @board[at_position[0]][at_position[1]] = ""
-
     default_pos = pawn_owner.destroy_pawn(pawn_name)
-
-    @board[default_pos[0]][default_pos[1]] = "pawn_name"
+    @board[default_pos[0]][default_pos[1]] = pawn_name
   end
 
   def override_turn(new_player_turn)
     @turn = new_player_turn
+  end
+
+private
+
+  def handle_if_pawn_finished
+    pawn_new_pos = @selected_pawn.pos
+    player_this_turn = @players[:"#{@turn}"]
+
+    if pawn_new_pos == [5, 5]
+      puts
+      puts "Pawn #{@selected_pawn.name} finished"
+      player_this_turn.finish_pawn(@selected_pawn.name)
+    else
+      handle_if_steps_on_pawn(pawn_new_pos)
+    end
+  end
+
+  def handle_if_steps_on_pawn(on_position)
+    if board[on_position[0]][on_position[1]] != "" 
+      pawn_to_destroy = board[on_position[0]][on_position[1]]
+      destroy_pawn(pawn_to_destroy, on_position)
+      board[on_position[0]][on_position[1]] = ""
+    end
+    
+    @board[on_position[0]][on_position[1]] = @selected_pawn.name
+ end
+
+  def handle_next_turn
+    player_this_turn = @players[:"#{@turn}"]
+    if player_this_turn.last_roll == 6
+      "You can roll once more"
+    else
+      next_turn
+    end
   end
 end

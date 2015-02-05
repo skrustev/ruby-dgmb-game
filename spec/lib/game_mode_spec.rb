@@ -121,7 +121,7 @@ describe 'GameMode' do
       expect(game_blue_start.selected_pawn).to eq(player1.pawns[:"b:1"])
       expect(game_blue_start.selected_pawn.pos).to eq([0, 1])
 
-      game_blue_start.activate_pawn
+      game_blue_start.activate_selected_pawn
       expect(game_blue_start.board).to eq([ ["b:0", "", "", "", "b:1", "" , "", "", "", "r:0", "r:1"],
                                       ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
@@ -145,7 +145,7 @@ describe 'GameMode' do
       expect(game_blue_start.selected_pawn.name).to eq("b:2")
       expect(game_blue_start.selected_pawn.pos).to eq([1, 0])
 
-      game_blue_start.activate_pawn
+      game_blue_start.activate_selected_pawn
       expect(game_blue_start.board).to eq([ ["b:0", "b:1", "", "", "b:2", "" , "", "", "", "r:0", "r:1"],
                                       ["", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
                                       ["", "", "", "", "", "" , "", "", "", "", ""],
@@ -165,7 +165,7 @@ describe 'GameMode' do
     it "can select only 1 active pawn and not 3 non active" do
       player1.last_roll = 6
       expect(game_blue_start.select_pawn("b:1")).to eq(player1.pawns[:"b:1"])
-      game_blue_start.activate_pawn
+      game_blue_start.activate_selected_pawn
 
       player1.last_roll = 4
 
@@ -181,7 +181,7 @@ describe 'GameMode' do
       game_blue_start.select_pawn("b:0")
       expect(game_blue_start.selected_pawn.pos).to eq([0, 0])
 
-      game_blue_start.activate_pawn
+      game_blue_start.activate_selected_pawn
       expect(game_blue_start.selected_pawn.pos).to eq([0, 4])
 
       game_blue_start.destroy_pawn("b:0", [0, 4])
@@ -193,13 +193,13 @@ describe 'GameMode' do
       game_blue_start.select_pawn("b:1")
       expect(game_blue_start.selected_pawn.pos).to eq([0, 1])
 
-      game_blue_start.activate_pawn
+      game_blue_start.activate_selected_pawn
       expect(game_blue_start.selected_pawn.pos).to eq([0, 4])
 
       player1.last_roll = 4
       game_blue_start.select_pawn("b:1")
       expect(game_blue_start.selected_pawn.pos).to eq([0, 4])
-      game_blue_start.move_pawn
+      game_blue_start.move_selected_pawn
       expect(game_blue_start.selected_pawn.pos).to eq([4, 4])
       expect(game_blue_start.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "r:0", "r:1"],
                                 ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
@@ -218,7 +218,7 @@ describe 'GameMode' do
       player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       expect(game_blue_start.selected_pawn.pos).to eq([4, 4])
-      game_blue_start.move_pawn
+      game_blue_start.move_selected_pawn
       expect(game_blue_start.selected_pawn.pos).to eq([6, 0])
       expect(game_blue_start.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "r:0", "r:1"],
                                 ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
@@ -231,12 +231,19 @@ describe 'GameMode' do
                                 ["", "", "", "", "", "" , "", "", "", "", ""],
                                 ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
                                 ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
-      expect(game_blue_start.turn).to eq("player2")
+      expect(game_blue_start.turn).to eq("player1")
 
       game_blue_start.destroy_pawn("b:1", [6, 0])
     end
 
-    it "can/cannot finish pawn" do
+    it "cannot move inactive pawn when rolled 6" do
+      player1.last_roll = 6
+      game_blue_start.select_pawn("b:1")
+      
+      expect(game_blue_start.move_selected_pawn).to eq("You need to activate this pawn first")
+    end
+
+    it "can finish pawn" do
       player1.last_roll = 6
       game_blue_start.select_pawn("b:2")
       expect(game_blue_start.selected_pawn.name).to eq("b:2")
@@ -244,48 +251,151 @@ describe 'GameMode' do
 
 
       game_blue_start.select_pawn("b:0")
-      game_blue_start.activate_pawn
+      game_blue_start.activate_selected_pawn
       expect(game_blue_start.selected_pawn.pos).to eq([0, 4])
 
       [1, 2, 3, 4, 5, 6, 7, 8].each do
         game_blue_start.override_turn("player1")
         player1.last_roll = 5
         game_blue_start.select_pawn("b:0")
-        game_blue_start.move_pawn
+        game_blue_start.move_selected_pawn
       end     
       expect(game_blue_start.selected_pawn.pos).to eq([1, 5])
 
       #should roll exactly 4
-      #roll > 4
-      game_blue_start.override_turn("player1")
-      player1.last_roll = 6
-      game_blue_start.select_pawn("b:0")
-      
-      expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 4 to use this pawn")
-
       #roll 4
       game_blue_start.override_turn("player1")
       player1.last_roll = 4
       expect(game_blue_start.select_pawn("b:0")).to eq(player1.pawns[:"b:0"])
-      game_blue_start.move_pawn
+      game_blue_start.move_selected_pawn
 
       expect(game_blue_start.selected_pawn.is_active).to eq(false)
       expect(game_blue_start.selected_pawn.is_finished).to eq(true)
       expect(game_blue_start.board).to eq([ ["", "b:1", "", "", "", "" , "", "", "", "r:0", "r:1"],
-                                ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
-                                ["", "", "", "", "", "" , "", "", "", "", ""],
-                                ["", "", "", "", "", "" , "", "", "", "", ""],
-                                ["", "", "", "", "", "" , "", "", "", "", ""],
-                                ["", "", "", "", "", "X" , "", "", "", "", ""],
-                                ["", "", "", "", "", "" , "", "", "", "", ""],
-                                ["", "", "", "", "", "" , "", "", "", "", ""],
-                                ["", "", "", "", "", "" , "", "", "", "", ""],
-                                ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
-                                ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+                                            ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                            ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
 
 
     end
 
+    it "cannot finish pawn when not rolled proper number" do
+      player1.last_roll = 6
+      game_blue_start.select_pawn("b:2")
+      expect(game_blue_start.selected_pawn.name).to eq("b:2")
+      expect(game_blue_start.selected_pawn.pos).to eq([1, 0])
+
+
+      game_blue_start.select_pawn("b:0")
+      game_blue_start.activate_selected_pawn
+      expect(game_blue_start.selected_pawn.pos).to eq([0, 4])
+
+      [1, 2, 3, 4, 5, 6, 7].each do
+        game_blue_start.override_turn("player1")
+        player1.last_roll = 5
+        game_blue_start.select_pawn("b:0")
+        game_blue_start.move_selected_pawn
+      end
+
+      game_blue_start.override_turn("player1")
+      player1.last_roll = 6
+      game_blue_start.select_pawn("b:0")
+      game_blue_start.move_selected_pawn
+
+      expect(game_blue_start.selected_pawn.pos).to eq([2, 5])
+
+      #should roll exactly 3
+      #roll 5
+      game_blue_start.override_turn("player1")
+      player1.last_roll = 5
+      game_blue_start.select_pawn("b:0")
+      
+      expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 3 to use this pawn")
+
+      #roll 4
+      game_blue_start.override_turn("player1")
+      player1.last_roll = 4
+      game_blue_start.select_pawn("b:0")
+      
+      expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 3 to use this pawn")
+    end
+
+    it "can destroy pawn when stepped on it" do
+      player1.last_roll = 6
+      game_blue_start.select_pawn("b:1")
+      game_blue_start.activate_selected_pawn
+
+      expect(game_blue_start.turn).to eq("player1")
+      
+      player1.last_roll = 1
+      game_blue_start.move_selected_pawn
+
+      expect(game_blue_start.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "r:0", "r:1"],
+                                            ["b:2", "b:3", "", "", "b:1", "" , "", "", "", "r:2", "r:3"],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                            ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+      expect(game_blue_start.turn).to eq("player2")
+
+      game_blue_start.override_turn("player4")
+      player4.last_roll = 6
+      game_blue_start.select_pawn("r:0")
+      game_blue_start.activate_selected_pawn
+
+      [1,2].each do
+        game_blue_start.override_turn("player4")
+        player4.last_roll = 6
+        game_blue_start.move_selected_pawn
+      end
+
+      game_blue_start.override_turn("player4")
+      player4.last_roll = 2
+      game_blue_start.move_selected_pawn
+
+      expect(game_blue_start.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "", "r:1"],
+                                            ["b:2", "b:3", "", "", "b:1", "" , "", "", "", "r:2", "r:3"],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "r:0", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                            ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+      expect(game_blue_start.turn).to eq("player1")
+
+      player1.last_roll = 3
+      game_blue_start.select_pawn("b:1")
+      game_blue_start.move_selected_pawn
+
+      expect(player4.pawns[:"r:0"].pos).to eq([0, 9])
+      expect(game_blue_start.board).to eq([ ["b:0", "", "", "", "", "" , "", "", "", "r:0", "r:1"],
+                                            ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "b:1", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "X" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["", "", "", "", "", "" , "", "", "", "", ""],
+                                            ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
+                                            ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]])
+
+    end
 
   end
 end
