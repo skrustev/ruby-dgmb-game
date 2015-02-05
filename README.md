@@ -3,7 +3,7 @@ Don't Get Mad Bro
 
 A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽ᕗ
 
-*Note: Currently the game is in development state and NOT playable*
+*NOTE: CURRENTYL THE GAME IS IN DEVELOPMENT STATE AND NOT PLAYABLE*
 
 ##To do:
 * [ ] Add support for multiple pawns of one team at a the same position
@@ -33,8 +33,6 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 
 ##Used gems:
 
-> [RSpec](https://github.com/rspec/rspec)
-
-> [Guard](https://github.com/guard/guard)
-
-> [Gosu](http://www.libgosu.org/)
+* [RSpec](https://github.com/rspec/rspec)
+* [Guard](https://github.com/guard/guard)
+* [Gosu](http://www.libgosu.org/)
