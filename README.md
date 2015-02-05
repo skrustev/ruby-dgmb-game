@@ -3,7 +3,7 @@ Don't Get Mad Bro
 
 A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽ᕗ
 
-*NOTE: CURRENTYL THE GAME IS IN DEVELOPMENT STATE AND NOT PLAYABLE*
+*NOTE: CURRENTLY THE GAME IS IN DEVELOPMENT STATE AND NOT PLAYABLE*
 
 ##To do:
 * [ ] Add support for multiple pawns of one team at a the same position
