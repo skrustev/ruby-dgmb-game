@@ -6,19 +6,25 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 **Note:** Currently the game is in development state and not playable
 
 **To do:**
-> Add support for multiple pawns of one team at a the same position
-> Win event
-> Restart game event
-> Graphic interface of the game
-> Console interface of the game
+> * Add support for multiple pawns of one team at a the same position
 
+> * Win event
 
+> * Restart game event
 
-**Installation:**
+> * Graphic interface of the game
+
+> * Console interface of the game
+
+## How To Play
+
 1. Download and install latest ruby from their site:
 	http://rubyinstaller.org/
+
 2. Clone this repo in a desired folder
+
 3. Navigate through your console to your cloned repo main folder
+
 4. Run the following command to install the dependencies:
 	```
 	bundle
@@ -29,9 +35,12 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 	ruby game.rb
 	```
 
+---
 
-Used gems:
-> TTY
-> RSpec
-> Guard
-> Gosu
+###Used gems:
+
+> [RSpec](https://github.com/rspec/rspec)
+
+> [Guard](https://github.com/guard/guard)
+
+> [Gosu](http://www.libgosu.org/)
