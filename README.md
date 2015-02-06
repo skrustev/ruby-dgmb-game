@@ -21,6 +21,7 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 
 3. Open your console
 4. Execute
+
 	```
 	gem install bundler
 	```
