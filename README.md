@@ -13,9 +13,10 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 
 ## How To Play
 
-1. Download and install latest ruby from their site:
-  http://rubyinstaller.org/
-
+1. Download and install latest ruby.
+ * Installer For Windows - http://rubyinstaller.org/
+ * For Linux/OSX install [rbenv](https://github.com/sstephenson/rbenv#installation) + [ruby-build](https://github.com/sstephenson/ruby-build#readme)
+  
 2. Clone this repo in a desired folder
 
 3. Navigate through your console to your cloned repo main folder
