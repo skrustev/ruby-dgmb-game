@@ -6,7 +6,6 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 *NOTE: CURRENTLY THE GAME IS IN DEVELOPMENT STATE AND NOT PLAYABLE*
 
 ##To do:
-* [ ] Add support for multiple pawns of one team at a the same position
 * [ ] Win event
 * [ ] Restart game event
 * [ ] Graphic interface of the game
