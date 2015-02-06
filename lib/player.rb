@@ -94,5 +94,3 @@ class Player
     pawns[:"#{pawn_name}"].pos
   end 
 end
-
-

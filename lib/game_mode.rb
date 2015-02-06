@@ -3,17 +3,17 @@ require_relative './player'
 class GameMode
   attr_reader  :board, :turn, :players, :selected_pawn
   def initialize(start_turn = "player1", players = {})
-    @board = [["b:0", "b:1", "", "", "", "" , "", "", "", "r:0", "r:1"],
-              ["b:2", "b:3", "", "", "", "" , "", "", "", "r:2", "r:3"],
-              ["", "", "", "", "", "" , "", "", "", "", ""],
-              ["", "", "", "", "", "" , "", "", "", "", ""],
-              ["", "", "", "", "", "" , "", "", "", "", ""],
-              ["", "", "", "", "", "X" , "", "", "", "", ""],
-              ["", "", "", "", "", "" , "", "", "", "", ""],
-              ["", "", "", "", "", "" , "", "", "", "", ""],
-              ["", "", "", "", "", "" , "", "", "", "", ""],
-              ["y:0", "y:1", "", "", "", "" , "", "", "", "g:0", "g:1"],
-              ["y:2", "y:3", "", "", "", "" , "", "", "", "g:2", "g:3"]]
+    @board = [[["b:0"], ["b:1"], [], [], [], [] , [], [], [], ["r:0"], ["r:1"]],
+              [["b:2"], ["b:3"], [], [], [], [], [], [], [], ["r:2"], ["r:3"]],
+              [[], [], [], [], [], [] , [], [], [], [], []],
+              [[], [], [], [], [], [] , [], [], [], [], []],
+              [[], [], [], [], [], [] , [], [], [], [], []],
+              [[], [], [], [], [], ["X"] , [], [], [], [], []],
+              [[], [], [], [], [], [] , [], [], [], [], []],
+              [[], [], [], [], [], [] , [], [], [], [], []],
+              [[], [], [], [], [], [] , [], [], [], [], []],
+              [["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"]],
+              [["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"]]]
     @players = players
     @turn = start_turn
     @selected_pawn = Pawn.new
@@ -57,9 +57,9 @@ class GameMode
       pawn_pos = @selected_pawn.pos
       start_pos = @players[:"#{@turn}"].start_pos
 
-      @board[pawn_pos[0]][pawn_pos[1]] = ""
+      @board[pawn_pos[0]][pawn_pos[1]].delete(@selected_pawn.name)
       @players[:"#{@turn}"].activate_pawn(@selected_pawn.name)
-      @board[start_pos[0]][start_pos[1]] = @selected_pawn.name
+      @board[start_pos[0]][start_pos[1]] << @selected_pawn.name
       
     else
       puts "Please select a pawn"
@@ -71,7 +71,7 @@ class GameMode
     player_this_turn = @players[:"#{@turn}"]
 
     if @selected_pawn.is_active
-      @board[pawn_pos[0]][pawn_pos[1]] = ""
+      @board[pawn_pos[0]][pawn_pos[1]].delete(@selected_pawn.name)
       player_this_turn.move_pawn(@selected_pawn.name, player_this_turn.last_roll)
     else
       return "You need to activate this pawn first"
@@ -81,17 +81,31 @@ class GameMode
     handle_next_turn
   end
 
-  def destroy_pawn(pawn_name, at_position)
-    pawn_owner =  case pawn_name[0]
+  #can accept just string for one name to destroy or array of strings
+  def destroy_pawns(pawn_names_array, at_position)
+    #this is done for safety reasons, otherwise it gets eaten when iterating through it if being array
+    pawns_to_destroy = pawn_names_array.dup
+
+    pawn_owner =  case pawn_names_array[0][0]
                   when 'b' then @players[:"player1"]
                   when 'y' then @players[:"player2"]
                   when 'g' then @players[:"player3"]
                   when 'r' then @players[:"player4"]
                   end
-
-    @board[at_position[0]][at_position[1]] = ""
-    default_pos = pawn_owner.destroy_pawn(pawn_name)
-    @board[default_pos[0]][default_pos[1]] = pawn_name
+                  
+    #check if it is single string or array of strings
+    if pawns_to_destroy.is_a?(String)
+      board[at_position[0]][at_position[1]].delete(pawns_to_destroy)    
+      default_pos = pawn_owner.destroy_pawn(pawns_to_destroy)
+      @board[default_pos[0]][default_pos[1]] << pawns_to_destroy
+    elsif pawns_to_destroy.is_a?(Array)
+      pawns_to_destroy.each do |pawn_name|
+        board[at_position[0]][at_position[1]].delete(pawn_name)    
+        default_pos = pawn_owner.destroy_pawn(pawn_name)
+        @board[default_pos[0]][default_pos[1]] << pawn_name
+      end
+    end
+    
   end
 
   def override_turn(new_player_turn)
@@ -114,13 +128,20 @@ private
   end
 
   def handle_if_steps_on_pawn(on_position)
-    if board[on_position[0]][on_position[1]] != "" 
-      pawn_to_destroy = board[on_position[0]][on_position[1]]
-      destroy_pawn(pawn_to_destroy, on_position)
-      board[on_position[0]][on_position[1]] = ""
+    if board[on_position[0]][on_position[1]].size > 0
+      first_pawn_on_position = board[on_position[0]][on_position[1]][0]
+    else
+      first_pawn_on_position = board[on_position[0]][on_position[1]]
     end
-    
-    @board[on_position[0]][on_position[1]] = @selected_pawn.name
+
+    player_this_turn = @players[:"#{@turn}"]
+
+    unless board[on_position[0]][on_position[1]].empty? || player_this_turn.pawns.include?(:"#{first_pawn_on_position}")
+      pawns_to_destroy = board[on_position[0]][on_position[1]]
+      destroy_pawns(pawns_to_destroy, on_position)
+    end
+
+    @board[on_position[0]][on_position[1]] << @selected_pawn.name
  end
 
   def handle_next_turn
