@@ -25,6 +25,7 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 	```
 	gem install bundler
 	```
+**Note:** If you are having problem with SSL and it says that there's a problem connecting to the gem site see here for updating the gem version - [link](https://gist.github.com/luislavena/f064211759ee0f806c88)
 5. Navigate using command 'cd' to your cloned repo main folder.
 
 6. Run the following command to install the dependencies:
