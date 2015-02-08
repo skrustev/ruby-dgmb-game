@@ -25,5 +25,9 @@ end
 
 #test out the TTY input reader
 shell = TTY::Shell.new
-shell.ask("What is your name?").argument(:required).default('Piotr').validate(/\w+\s\w+/).read_string
+name = shell.ask("What is your name?") do
+    argument(:required)
+    default('Piotr')
+end.read_string
 
+puts "Hello " + name
