@@ -21,3 +21,4 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 * [RSpec](https://github.com/rspec/rspec)
 * [Guard](https://github.com/guard/guard)
 * [Gosu](http://www.libgosu.org/)
+* [Ocra](https://github.com/larsch/ocra/)
