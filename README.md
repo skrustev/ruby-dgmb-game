@@ -6,8 +6,6 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 *NOTE: CURRENTLY THE GAME IS IN DEVELOPMENT STATE AND NOT PLAYABLE*
 
 ##To do:
-* Win event[WIP]
-* Restart game event[WIP]
 * Graphic interface of the game[WIP]
 * Console interface of the game
 
