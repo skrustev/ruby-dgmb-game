@@ -10,59 +10,32 @@ class GameWindow < Gosu::Window
     super(WIDTH, HEIGHT, false)
     self.caption = "Don't Get Mad Bro"
 
-    @start_menu = Menu.new(self)
-    @setup_menu = Menu.new(self, true)
+    @start_menu = StartMenu.new(self)
+    @setup_menu = SetupMenu.new(self, true)
     @background = Gosu::Image.new(self, "images/background.png", false)
-    
-    initialize_start_menu
-    initialize_setup_menu
+
+    start_menu_add_buttons
+    setup_menu_add_buttons
   end
 
-  def initialize_start_menu
-    x = (self.width / 4)/2 - 50
-    y = self.height  / 2 - 50
-    heightOffset = 75
-    widthOffset = 15
-
-
-    buttons = ["start", "exit"]
-    start_callback =  lambda do
-                        self.start_menu.hide
-                        self.setup_menu.unhide
-                      end
-    exit_callback = lambda { self.close }
-
-    button_callbacks = [start_callback]
-    button_callbacks << exit_callback
-
-    button_callbacks.each_with_index do |callback, index|
-      @start_menu.add_item(Gosu::Image.new(self, "images/#{buttons[index]}.png", false),
-                        x, y, 1, callback, Gosu::Image.new(self, "images/#{buttons[index]}_hover.png", false))
-      x += widthOffset
-      y += heightOffset
-    end
+  def start_menu_add_buttons
+    start_callback = lambda do
+                              self.start_menu.hide
+                              self.setup_menu.unhide
+                            end
+    @start_menu.add_start_button(start_callback)
+    @start_menu.add_exit_button
   end
 
-  def initialize_setup_menu
-    x = (self.width / 4)/2 - 50
-    y = self.height  / 2
-    heightOffset = 200
+  def setup_menu_add_buttons
+    @setup_menu.add_selection_message
+    @setup_menu.add_begin_button
 
-    buttons = ["begin", "back"]
-    begin_callback = lambda { self }
     back_callback  = lambda do
                               self.setup_menu.hide
                               self.start_menu.unhide
                             end
-
-    @setup_menu.add_item(Gosu::Image.new(self, "images/select_players_message.png", false), x-20, y-200, 1, lambda { self })
-    
-
-    @setup_menu.add_item(Gosu::Image.new(self, "images/begin.png", false),
-                        x, y + 300, 1, begin_callback, Gosu::Image.new(self, "images/begin_hover.png", false))
-    @setup_menu.add_item(Gosu::Image.new(self, "images/back.png", false),
-                        x, y + 375, 1, back_callback, Gosu::Image.new(self, "images/back_hover.png", false))
-
+    @setup_menu.add_back_button(back_callback)
   end
 
   def update
