@@ -3,7 +3,7 @@ class Pawn
               :is_active, :is_finished, :can_be_moved
 
   def initialize(name = nil, player_name = nil, initial_pos = [-1,-1])
-    @name = name;
+    @name = name
     @player_name = player_name
     @initial_pos = initial_pos
     @pos = @initial_pos
@@ -48,5 +48,14 @@ class Pawn
     else
       false
     end
+  end
+
+  def reset
+    @initial_pos = initial_pos
+    @pos = @initial_pos
+    @path_pos = -1
+    @is_active = false
+    @is_finished = false
+    @can_be_moved = false
   end
 end

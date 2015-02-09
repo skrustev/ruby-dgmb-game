@@ -133,8 +133,43 @@ class GameMode
     @turn = new_player_turn
   end
 
-private
+  def have_winner
+    result = [false, ""]
+    @players.each do |name, player|
+      if player.finished_pawns == 4
+        result = [true, player.name]
+        return result
+      end
+    end
 
+    result
+  end
+
+  def restart_game
+    @players.each do |name, player|
+      player.reset
+    end
+
+    @turn = @turn_sequence[0]
+    @board =
+      [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], ["r:0"], ["r:1"], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
+       [[], [], ["r:2"], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"], [], []],
+       [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
+  end
+
+private
   def handle_if_pawn_finished
     pawn_new_pos = @selected_pawn.pos
     player_this_turn = @players[:"#{@turn}"]
@@ -163,7 +198,7 @@ private
     end
 
     @board[on_position[0]][on_position[1]] << @selected_pawn.name
- end
+  end
 
   def handle_next_turn
     player_this_turn = @players[:"#{@turn}"]

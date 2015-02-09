@@ -79,4 +79,38 @@ describe 'Pawn' do
       expect(pawn2 == pawn3).to eq(false)
     end
   end
-end 
+
+  context "can be reset " do
+    subject(:pawn4) { Pawn.new("b:1", "player2", [2,6]) }
+
+    it "when active" do
+      pawn4.activate([1,3])
+      pawn4.move(5, [4,3])
+      pawn4.reset
+
+      expect(pawn4.pos).to eq(pawn4.initial_pos)
+      expect(pawn4.path_pos).to eq(-1)
+      expect(pawn4.player_name).to eq("player2")
+      expect(pawn4.initial_pos).to eq([2,6])
+      expect(pawn4.is_active).to eq(false)
+      expect(pawn4.is_finished).to eq(false)
+      expect(pawn4.can_be_moved).to eq(false)
+    end
+
+    it "when finished" do
+      pawn4.activate([0,5])
+      pawn4.move(1, [1, 5])
+      pawn4.destroy
+      pawn4.finish
+      pawn4.reset
+
+      expect(pawn4.pos).to eq(pawn4.initial_pos)
+      expect(pawn4.path_pos).to eq(-1)
+      expect(pawn4.player_name).to eq("player2")
+      expect(pawn4.initial_pos).to eq([2,6])
+      expect(pawn4.is_active).to eq(false)
+      expect(pawn4.is_finished).to eq(false)
+      expect(pawn4.can_be_moved).to eq(false)
+    end
+  end
+end

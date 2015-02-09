@@ -96,5 +96,15 @@ class Player
     end
 
     pawns[:"#{pawn_name}"].pos
-  end 
+  end
+
+  def reset
+    @active_pawns = 0
+    @finished_pawns = 0
+    @last_roll = 0
+
+    pawns.each do |name, pawn|
+      pawn.reset
+    end
+  end
 end

@@ -807,4 +807,237 @@ describe 'GameMode' do
       )
     end
   end
+
+
+  context "can  " do
+    playerA = Player.new("player1", "blue")
+    playerB = Player.new("player2", "red")
+    playerC = Player.new("player3", "yellow")
+    playerD = Player.new("player4", "green")
+    playersB = { :"player1" => playerA,
+                :"player2" => playerB,
+                :"player3" => playerC,
+                :"player4" => playerD }
+  
+    let(:game_win) { GameMode.new("player1", playersB) }
+
+    it "determine if we have a winner" do
+      expect(game_win.turn).to eq("player1")
+      expect(game_win.have_winner).to eq([false, ""])
+
+      #finishing 3 pawns for player4 
+      game_win.override_turn("player4")
+      playerD.last_roll = 6
+      game_win.select_pawn("g:0")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerD.last_roll = 6
+        game_win.select_pawn("g:0")
+        game_win.move_selected_pawn
+      end
+
+      playerD.last_roll = 1
+      game_win.select_pawn("g:0")
+      game_win.move_selected_pawn
+
+      game_win.override_turn("player4")
+      playerD.last_roll = 6
+      game_win.select_pawn("g:1")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerD.last_roll = 6
+        game_win.select_pawn("g:1")
+        game_win.move_selected_pawn
+      end
+
+      playerD.last_roll = 1
+      game_win.select_pawn("g:1")
+      game_win.move_selected_pawn
+
+      game_win.override_turn("player4")
+      playerD.last_roll = 6
+      game_win.select_pawn("g:2")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerD.last_roll = 6
+        game_win.select_pawn("g:2")
+        game_win.move_selected_pawn
+      end
+
+      playerD.last_roll = 1
+      game_win.select_pawn("g:2")
+      game_win.move_selected_pawn
+
+      expect(playerD.finished_pawns).to eq(3)
+      expect(playerD.active_pawns).to eq(0)
+      # player4 3 pawns finished
+
+      #finishing 3 pawns for player2
+      game_win.override_turn("player2")
+      expect(game_win.turn).to eq("player2")
+      playerB.last_roll = 6
+      game_win.select_pawn("r:0")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerB.last_roll = 6
+        game_win.select_pawn("r:0")
+        game_win.move_selected_pawn
+      end
+
+      playerB.last_roll = 1
+      game_win.select_pawn("r:0")
+      game_win.move_selected_pawn
+
+      game_win.override_turn("player2")
+      playerB.last_roll = 6
+      game_win.select_pawn("r:1")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerB.last_roll = 6
+        game_win.select_pawn("r:1")
+        game_win.move_selected_pawn
+      end
+
+      playerB.last_roll = 1
+      game_win.select_pawn("r:1")
+      game_win.move_selected_pawn
+
+      game_win.override_turn("player2")
+      playerB.last_roll = 6
+      game_win.select_pawn("r:2")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerB.last_roll = 6
+        game_win.select_pawn("r:2")
+        game_win.move_selected_pawn
+      end
+
+      playerB.last_roll = 1
+      game_win.select_pawn("r:2")
+      game_win.move_selected_pawn
+      # player2 3 pawns finished
+
+      expect(game_win.board).to eq(
+        [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
+         [[], [], [], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], [], [], [], []],
+         [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], [], ["g:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
+      )
+      #finishing last pawn for player4
+      game_win.override_turn("player4")
+      playerD.last_roll = 6
+      game_win.select_pawn("g:3")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerD.last_roll = 6
+        game_win.select_pawn("g:3")
+        game_win.move_selected_pawn
+      end
+
+      playerD.last_roll = 1
+      game_win.select_pawn("g:3")
+      game_win.move_selected_pawn
+
+      expect(playerD.finished_pawns).to eq(4)
+      expect(playerD.active_pawns).to eq(0)
+      expect(game_win.have_winner).to eq([true, "player4"])
+      expect(game_win.board).to eq(
+        [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
+         [[], [], [], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], [], [], [], []],
+         [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
+      )
+
+      playerB.reset
+      playerD.reset
+    end
+
+    it "restart game and players with 1 finished and 1 active pawn" do
+      #playerA has 1 finished pawn
+      playerA.last_roll = 6
+      game_win.select_pawn("b:0")
+      game_win.activate_selected_pawn
+
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
+        playerA.last_roll = 6
+        game_win.select_pawn("b:0")
+        game_win.move_selected_pawn
+      end
+
+      playerA.last_roll = 1
+      game_win.select_pawn("b:0")
+      game_win.move_selected_pawn
+
+      expect(playerA.pawns[:"b:0"].is_finished).to eq(true)
+
+      #playerB has 1 active pawn
+      playerB.last_roll = 6
+      game_win.select_pawn("r:1")
+      game_win.activate_selected_pawn
+
+      playerB.last_roll = 5
+      game_win.select_pawn("r:1")
+      game_win.move_selected_pawn
+
+      expect(playerB.pawns[:"r:1"].is_active).to eq(true)
+
+      game_win.restart_game
+
+      expect(game_win.turn).to eq("player1")
+      expect(playerA.finished_pawns).to eq(0)
+      expect(playerA.pawns[:"b:0"].pos).to eq([2, 11])
+      expect(playerA.pawns[:"b:0"].is_finished).to eq(false)
+
+      expect(playerB.active_pawns).to eq(0)
+      expect(playerB.pawns[:"r:1"].pos).to eq([2, 3])
+      expect(playerB.pawns[:"r:1"].is_active).to eq(false)
+
+      expect(game_win.board).to eq(
+        [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["r:0"], ["r:1"], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
+         [[], [], ["r:2"], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"], [], []],
+         [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
+      )
+    end
+  end
 end

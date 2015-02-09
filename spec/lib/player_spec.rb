@@ -105,6 +105,48 @@ describe 'Player' do
       expect(blue_player.pawns[:"b:3"].pos).to eq([-1, -1])
       expect(blue_player.pawns[:"b:3"].path_pos).to eq(-1)
     end
+
+    it "can reset self and pawns" do
+      blue_player.activate_pawn("b:3")
+      blue_player.activate_pawn("b:1")
+      blue_player.finish_pawn("b:3")
+
+      expect(blue_player.active_pawns).to eq(1)
+      expect(blue_player.finished_pawns).to eq(1)
+      expect(blue_player.pawns[:"b:3"].pos).to eq([-1,-1])
+      expect(blue_player.pawns[:"b:1"].pos).to eq(blue_player.start_pos)
+
+      blue_player.finish_pawn("b:1")
+
+      expect(blue_player.active_pawns).to eq(0)
+      expect(blue_player.finished_pawns).to eq(2)
+      expect(blue_player.pawns[:"b:1"].pos).to eq([-1,-1])
+
+      blue_player.activate_pawn("b:0")
+      expect(blue_player.active_pawns).to eq(1)
+      expect(blue_player.finished_pawns).to eq(2)
+      expect(blue_player.pawns[:"b:0"].pos).to eq(blue_player.start_pos)
+
+      blue_player.reset
+      expect(blue_player.active_pawns).to eq(0)
+      expect(blue_player.finished_pawns).to eq(0)
+      expect(blue_player.pawns[:"b:0"].pos).to eq([2, 11])
+      expect(blue_player.pawns[:"b:0"].is_active).to eq(false)
+      expect(blue_player.pawns[:"b:0"].is_finished).to eq(false)
+
+      expect(blue_player.pawns[:"b:1"].pos).to eq([2, 12])
+      expect(blue_player.pawns[:"b:1"].is_active).to eq(false)
+      expect(blue_player.pawns[:"b:1"].is_finished).to eq(false)
+
+      expect(blue_player.pawns[:"b:2"].pos).to eq([3, 11])
+      expect(blue_player.pawns[:"b:2"].is_active).to eq(false)
+      expect(blue_player.pawns[:"b:2"].is_finished).to eq(false)
+
+      expect(blue_player.pawns[:"b:3"].pos).to eq([3, 12])
+      expect(blue_player.pawns[:"b:3"].is_active).to eq(false)
+      expect(blue_player.pawns[:"b:3"].is_finished).to eq(false)
+
+    end
   end
 
   context "yellow colored player " do
