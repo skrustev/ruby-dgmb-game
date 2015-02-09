@@ -3,17 +3,22 @@ require_relative './player'
 class GameMode
   attr_reader  :board, :turn, :players, :selected_pawn
   def initialize(start_turn = "player1", players = {})
-    @board = [[["b:0"], ["b:1"], [], [], [], [] , [], [], [], ["r:0"], ["r:1"]],
-              [["b:2"], ["b:3"], [], [], [], [], [], [], [], ["r:2"], ["r:3"]],
-              [[], [], [], [], [], [] , [], [], [], [], []],
-              [[], [], [], [], [], [] , [], [], [], [], []],
-              [[], [], [], [], [], [] , [], [], [], [], []],
-              [[], [], [], [], [], ["X"] , [], [], [], [], []],
-              [[], [], [], [], [], [] , [], [], [], [], []],
-              [[], [], [], [], [], [] , [], [], [], [], []],
-              [[], [], [], [], [], [] , [], [], [], [], []],
-              [["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"]],
-              [["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"]]]
+    @board = 
+      [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], ["r:0"], ["r:1"], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
+       [[], [], ["r:2"], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"], [], []],
+       [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+       [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
     @players = players
     @turn = start_turn
     @selected_pawn = Pawn.new
@@ -88,9 +93,9 @@ class GameMode
 
     pawn_owner =  case pawn_names_array[0][0]
                   when 'b' then @players[:"player1"]
-                  when 'y' then @players[:"player2"]
-                  when 'g' then @players[:"player3"]
-                  when 'r' then @players[:"player4"]
+                  when 'r' then @players[:"player2"]
+                  when 'y' then @players[:"player3"]
+                  when 'g' then @players[:"player4"]
                   end
                   
     #check if it is single string or array of strings
@@ -100,7 +105,7 @@ class GameMode
       @board[default_pos[0]][default_pos[1]] << pawns_to_destroy
     elsif pawns_to_destroy.is_a?(Array)
       pawns_to_destroy.each do |pawn_name|
-        board[at_position[0]][at_position[1]].delete(pawn_name)    
+        board[at_position[0]][at_position[1]].delete(pawn_name)
         default_pos = pawn_owner.destroy_pawn(pawn_name)
         @board[default_pos[0]][default_pos[1]] << pawn_name
       end
@@ -118,7 +123,7 @@ private
     pawn_new_pos = @selected_pawn.pos
     player_this_turn = @players[:"#{@turn}"]
 
-    if pawn_new_pos == [5, 5]
+    if @board[pawn_new_pos[0]][pawn_new_pos[1]] == ["X"]
       puts
       puts "Pawn #{@selected_pawn.name} finished"
       player_this_turn.finish_pawn(@selected_pawn.name)

@@ -16,12 +16,12 @@ describe 'Player' do
     it "can determine initial positions for pawns" do
       blue_player.determine_positions("blue")
 
-      expect(blue_player.start_pos).to eq([0, 4])
-      expect(blue_player.initial_pos).to eq([[0,0], [0,1], [1,0], [1,1]])
+      expect(blue_player.start_pos).to eq([0,6])
+      expect(blue_player.initial_pos).to eq([[2,11], [2,12], [3,11], [3,12]])
     end
     
     it "can set initial name/position on pawns" do
-      blue_pos = [[0,0], [0,1], [1,0], [1,1]]
+      blue_pos = [[2,11], [2,12], [3,11], [3,12]]
 
       expect(blue_player.pawns[:"b:0"].name).to eq("b:0")
       expect(blue_player.pawns[:"b:0"].pos).to eq(blue_pos[0])
@@ -52,11 +52,11 @@ describe 'Player' do
 
 
       blue_player.move_pawn("b:1", 4)
-      expect(blue_player.pawns[:"b:1"].pos).to eq([4, 4])
+      expect(blue_player.pawns[:"b:1"].pos).to eq([4, 6])
       expect(blue_player.pawns[:"b:1"].path_pos).to eq(4)
 
       blue_player.move_pawn("b:1", 5)
-      expect(blue_player.pawns[:"b:1"].pos).to eq([5, 0])
+      expect(blue_player.pawns[:"b:1"].pos).to eq([6, 3])
       expect(blue_player.pawns[:"b:1"].path_pos).to eq(9)
     end
 
@@ -84,14 +84,14 @@ describe 'Player' do
 
       blue_player.destroy_pawn("b:1")
       expect(blue_player.active_pawns).to eq(0)
-      expect(blue_player.pawns[:"b:1"].pos).to eq([0, 1])
+      expect(blue_player.pawns[:"b:1"].pos).to eq([2, 12])
       expect(blue_player.pawns[:"b:1"].path_pos).to eq(-1)
     end
 
     it "cannot destroy inactive pawn again" do
       blue_player.destroy_pawn("b:1")
       expect(blue_player.active_pawns).to eq(0)
-      expect(blue_player.pawns[:"b:1"].pos).to eq([0, 1])
+      expect(blue_player.pawns[:"b:1"].pos).to eq([2, 12])
       expect(blue_player.pawns[:"b:1"].path_pos).to eq(-1)
     end
 
@@ -113,12 +113,12 @@ describe 'Player' do
     it "can determine initial positions for pawns" do
       yellow_player.determine_positions("yellow")
 
-      expect(yellow_player.start_pos).to eq([6, 0])
-      expect(yellow_player.initial_pos).to eq([[9,0], [9,1], [10,0], [10,1]])
+      expect(yellow_player.start_pos).to eq([14, 8])
+      expect(yellow_player.initial_pos).to eq([[11,2], [11,3], [12,2], [12,3]])
     end
 
     it "can set initial name/position on pawns" do
-      yellow_pos = [[9,0], [9,1], [10,0], [10,1]]
+      yellow_pos = [[11,2], [11,3], [12,2], [12,3]]
 
       expect(yellow_player.pawns[:"y:0"].name).to eq("y:0")
       expect(yellow_player.pawns[:"y:0"].pos).to eq(yellow_pos[0])
@@ -149,11 +149,11 @@ describe 'Player' do
 
 
       yellow_player.move_pawn("y:1", 4)
-      expect(yellow_player.pawns[:"y:1"].pos).to eq([6, 4])
+      expect(yellow_player.pawns[:"y:1"].pos).to eq([10, 8])
       expect(yellow_player.pawns[:"y:1"].path_pos).to eq(4)
 
       yellow_player.move_pawn("y:1", 5)
-      expect(yellow_player.pawns[:"y:1"].pos).to eq([10, 5])
+      expect(yellow_player.pawns[:"y:1"].pos).to eq([8, 11])
       expect(yellow_player.pawns[:"y:1"].path_pos).to eq(9)
     end
 
@@ -182,13 +182,13 @@ describe 'Player' do
     it "can determine initial positions for pawns" do
       green_player.determine_positions("green")
 
-      expect(green_player.start_pos).to eq([10, 6])
-      expect(green_player.initial_pos).to eq([[9,9], [9,10], [10,9], [10, 10]])
+      expect(green_player.start_pos).to eq([6, 14])
+      expect(green_player.initial_pos).to eq([[11,11], [11,12], [12,11], [12, 12]])
     end
 
 
     it "can set initial name/position on pawns"do
-      green_pos = [[9,9], [9,10], [10,9], [10, 10]]
+      green_pos = [[11,11], [11,12], [12,11], [12, 12]]
 
       expect(green_player.pawns[:"g:0"].name).to eq("g:0")
       expect(green_player.pawns[:"g:0"].pos).to eq(green_pos[0])
@@ -210,13 +210,13 @@ describe 'Player' do
     it "can determine initial positions for pawns" do
       red_player.determine_positions("red")
 
-      expect(red_player.start_pos).to eq([4, 10])
-      expect(red_player.initial_pos).to eq([[0,9], [0, 10], [1,9], [1,10]])
+      expect(red_player.start_pos).to eq([8,0])
+      expect(red_player.initial_pos).to eq([[2,2], [2,3], [3,2], [3,3]])
     end
 
     it "can set initial name/position on pawns" do
-      red_pos = [[0,9], [0, 10], [1,9], [1,10]]
-      
+      red_pos = [[2,2], [2,3], [3,2], [3,3]]
+
       expect(red_player.pawns[:"r:0"].name).to eq("r:0")
       expect(red_player.pawns[:"r:0"].pos).to eq(red_pos[0])
 
