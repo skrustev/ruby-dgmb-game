@@ -3,7 +3,7 @@ require_relative './player'
 class GameMode
   attr_reader  :board, :turn, :players, :selected_pawn
   def initialize(start_turn = "player1", players = {})
-    @board = 
+    @board =
       [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
        [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
        [[], [], ["r:0"], ["r:1"], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
@@ -21,20 +21,37 @@ class GameMode
        [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
     @players = players
     @turn = start_turn
+    @turn_sequence = []
     @selected_pawn = Pawn.new
+
+    set_turn_sequence
+  end
+
+  def set_turn_sequence(turn_sequence = nil)
+    if turn_sequence
+      @turn_sequence = turn_sequence
+    else
+      @players.each do |player_name, object|
+        @turn_sequence << player_name.to_s
+      end
+    end
   end
 
   def next_turn
-    if(@turn[-1] == '4')
-      @turn = "player1"
+    if(@turn_sequence.index(@turn) == @turn_sequence.size - 1)
+      @turn = @turn_sequence[0]
     else
-      current = @turn[-1].to_i
-      @turn = @turn.chop + "#{current + 1}"
+      index_next_turn = @turn_sequence.index(@turn) + 1
+      @turn = @turn_sequence[index_next_turn]
     end
   end
 
   def add_player(player)
     @players[:"player#{players.size + 1}"] = player
+
+    unless @turn_sequence.include?("player#{players.size + 1}")
+      @turn_sequence << "player#{players.size + 1}"
+    end
   end
 
   def select_pawn(pawn_name)
@@ -44,7 +61,7 @@ class GameMode
       return "Cannot select enemy pawn!"
     else
       pawn_to_select = player_this_turn.pawns[:"#{pawn_name}"]
-    end 
+    end
 
     roll_to_finish = player_this_turn.path.size - pawn_to_select.path_pos - 1
 
@@ -64,8 +81,7 @@ class GameMode
 
       @board[pawn_pos[0]][pawn_pos[1]].delete(@selected_pawn.name)
       @players[:"#{@turn}"].activate_pawn(@selected_pawn.name)
-      @board[start_pos[0]][start_pos[1]] << @selected_pawn.name
-      
+      handle_if_steps_on_pawn(start_pos)
     else
       puts "Please select a pawn"
     end
@@ -97,10 +113,10 @@ class GameMode
                   when 'y' then @players[:"player3"]
                   when 'g' then @players[:"player4"]
                   end
-                  
+
     #check if it is single string or array of strings
     if pawns_to_destroy.is_a?(String)
-      board[at_position[0]][at_position[1]].delete(pawns_to_destroy)    
+      board[at_position[0]][at_position[1]].delete(pawns_to_destroy)
       default_pos = pawn_owner.destroy_pawn(pawns_to_destroy)
       @board[default_pos[0]][default_pos[1]] << pawns_to_destroy
     elsif pawns_to_destroy.is_a?(Array)

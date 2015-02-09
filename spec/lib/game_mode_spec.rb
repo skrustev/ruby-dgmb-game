@@ -10,6 +10,7 @@ describe 'GameMode' do
               :"player2" => player2,
               :"player3" => player3,
               :"player4" => player4 }
+  
   subject(:game) { GameMode.new("player1", players) }
   
   its(:board) { should eq(
@@ -41,7 +42,7 @@ describe 'GameMode' do
       game_empty.add_player(player1)
       game_empty.add_player(player2)
       game_empty.add_player(player3)
-      game_empty.add_player(player4)      
+      game_empty.add_player(player4)
 
       expect(game_empty.players).to eq(players)
     end
@@ -75,8 +76,28 @@ describe 'GameMode' do
     end
   end
 
+  context "can have different ammount of players" do
+    two_players = { :"player1" => player1,
+                    :"player3" => player3 }
+    let(:game_for_two) { GameMode.new("player1", two_players)}
+
+    it "can iterate 1 turn properly" do
+      game_for_two.next_turn
+      expect(game_for_two.turn).to eq("player3")
+    end
+
+    it "can iterate 2 turns properly" do
+      game_for_two.next_turn
+      game_for_two.next_turn
+      expect(game_for_two.turn).to eq("player1")
+    end
+  end
+
   context "blue " do
-    let(:game_blue_start) { GameMode.new("player1", players) }
+    three_players = { :"player1" => player1,
+                    :"player2" => player2,
+                    :"player4" => player4 }
+    let(:game_blue_start) { GameMode.new("player1", three_players) }
 
     it "cannot select red pawns " do
       expect(game_blue_start.select_pawn("r:0")).to eq("Cannot select enemy pawn!")
@@ -322,7 +343,7 @@ describe 'GameMode' do
         player1.last_roll = 5
         game_blue_start.select_pawn("b:0")
         game_blue_start.move_selected_pawn
-      end     
+      end
 
       game_blue_start.override_turn("player1")
       player1.last_roll = 2
@@ -388,14 +409,14 @@ describe 'GameMode' do
       game_blue_start.override_turn("player1")
       player1.last_roll = 5
       game_blue_start.select_pawn("b:0")
-      
+
       expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 3 to use this pawn")
 
       #roll 4
       game_blue_start.override_turn("player1")
       player1.last_roll = 4
       game_blue_start.select_pawn("b:0")
-      
+
       expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 3 to use this pawn")
 
       #from now on b:0 cannot be tested because it needs to be reset to the table
@@ -534,7 +555,7 @@ describe 'GameMode' do
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
       )
-  
+
       game_blue_start.destroy_pawns("b:1", [0, 6])
       expect(game_blue_start.board).to eq(
         [[[], [], [], [], [], [], ["b:3"], [], [], [], [], [], [], [], []],
@@ -572,7 +593,6 @@ describe 'GameMode' do
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
       )
-      
     end
 
     it "can move 2 pawns to same position" do
@@ -723,6 +743,64 @@ describe 'GameMode' do
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], [], [], []],
+         [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
+      )
+    end
+
+    it "pawn when activated can destroy enemy pawn on starting position" do
+      game_blue_start.override_turn("player4")
+      player4.last_roll = 6
+      game_blue_start.select_pawn("g:2")
+      game_blue_start.activate_selected_pawn
+
+      [1, 2].each do
+        player4.last_roll = 6
+        game_blue_start.select_pawn("g:2")
+        game_blue_start.move_selected_pawn
+      end
+
+      player4.last_roll = 2
+      game_blue_start.select_pawn("g:2")
+      game_blue_start.move_selected_pawn
+
+      expect(game_blue_start.turn).to eq("player1")
+      expect(game_blue_start.board).to eq(
+        [[[], [], [], [], [], [], ["g:2"], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["r:0"], ["r:1"], [], [], [], [], [], [], [], ["b:0"], ["b:1"], [], []],
+         [[], [], ["r:2"], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"], [], []],
+         [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], [], ["g:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
+      )
+
+      player1.last_roll = 6
+      game_blue_start.select_pawn("b:1")
+      game_blue_start.activate_selected_pawn
+
+      expect(game_blue_start.board).to eq(
+        [[[], [], [], [], [], [], ["b:1"], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["r:0"], ["r:1"], [], [], [], [], [], [], [], ["b:0"], [], [], []],
+         [[], [], ["r:2"], ["r:3"], [], [], [], [], [], [], [], ["b:2"], ["b:3"], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], ["X"], [], ["X"], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], ["X"], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+         [[], [], ["y:0"], ["y:1"], [], [], [], [] , [], [], [], ["g:0"], ["g:1"], [], []],
          [[], [], ["y:2"], ["y:3"], [], [], [], [] , [], [], [], ["g:2"], ["g:3"], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
