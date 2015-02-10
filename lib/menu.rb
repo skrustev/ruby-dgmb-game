@@ -1,6 +1,7 @@
 require_relative "menu_button"
+require_relative "pawn_button"
 
-class Menu
+class UI
   attr_accessor :hidden, :buttons
   def initialize(window, hidden = false)
     @window = window
@@ -41,7 +42,7 @@ class Menu
   end
 end
 
-class StartMenu < Menu
+class StartMenu < UI
   def initialize(window, hidden = false)
     super(window, hidden)
 
@@ -59,7 +60,6 @@ class StartMenu < Menu
                   1,
                   callback,
                   Gosu::Image.new(@window, "images/start_hover.png", false))
-
   end
 
   def add_exit_button(callback = lambda { @window.close })
@@ -74,7 +74,7 @@ class StartMenu < Menu
 
 end
 
-class SetupMenu < Menu
+class SetupMenu < UI
   def initialize(window, hidden = false)
     super(window, hidden)
 
@@ -113,7 +113,7 @@ class SetupMenu < Menu
                   Gosu::Image.new(@window, "images/back_hover.png", false))
   end
 
-  def add_player_select_button
+  def add_player_select_buttons
     select_category = ["blue", "red", "yellow", "green"]
     dummy_callback = lambda { @window }
     offset_y = -75
@@ -147,5 +147,104 @@ class SetupMenu < Menu
                   true)
       offset_y += 60
     end
+  end
+
+  def get_players_selected
+    array_players = []
+    select_category = ["blue", "red", "yellow", "green"]
+
+    select_category.each do |category|
+      unless @buttons[:"#{category}_player"].hidden
+        array_players << category
+      end
+    end
+
+    array_players
+  end
+end
+
+class IngameUI < UI
+  def initialize(window, hidden = false)
+    super(window, hidden)
+
+    @pawn_buttons = {}
+    @x = (@window.width / 4)/2 - 50
+    @y = @window.height  / 2
+    @heightOffset = 75
+  end
+
+  def draw
+    @buttons.each do |name, button|
+      button.draw
+    end
+
+    @pawn_buttons.each do |name, pawn_button|
+      pawn_button.draw
+    end
+  end
+
+  def update
+    @buttons.each do |name, button|
+      button.update
+    end
+
+    @pawn_buttons.each do |name, pawn_button|
+      pawn_button.update
+    end
+  end
+
+  def clicked
+    @buttons.each do |name, button|
+      button.clicked
+    end
+
+    @pawn_buttons.each do |name, pawn_button|
+      pawn_button.clicked
+    end
+  end
+
+  def hide
+    @hidden = true
+    @pawn_buttons = {}
+  end
+
+  def unhide
+    @hidden = false
+  end
+
+  def add_exit_button(callback = lambda { @window.close })
+    self.add_item("exit",
+                  Gosu::Image.new(@window, "images/exit.png", false),
+                  @x + 3,
+                  @y + 385,
+                  1,
+                  callback,
+                  Gosu::Image.new(@window, "images/exit_hover.png", false))
+  end
+
+  
+
+  def add_pawn_buttons
+    puts "called"
+    @window.game_mode.players.each do |player_name, player|
+      puts "For player " + player_name.to_s
+      player.pawns.each do |pawn_name, pawn|
+        puts "Adding pawn " + pawn_name.to_s
+        self.add_pawn(pawn_name,
+                      pawn,
+                      Gosu::Image.new(@window, "images/#{player.color}_pawn.png", false),
+                      500,
+                      500,
+                      1)
+      end
+    end
+    puts "ended"
+  end
+
+  protected
+
+  def add_pawn(name, pawn_object, image, x, y, z)
+    new_pawn = PawnButton.new(@window, pawn_object, image, x, y, z)
+    @pawn_buttons[:"#{name}"] = new_pawn
   end
 end
