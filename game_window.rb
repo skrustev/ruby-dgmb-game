@@ -36,6 +36,7 @@ class GameWindow < Gosu::Window
                               self.start_menu.unhide
                             end
     @setup_menu.add_back_button(back_callback)
+    @setup_menu.add_player_select_button
   end
 
   def update

@@ -1020,7 +1020,7 @@ describe 'GameMode' do
       expect(playerB.active_pawns).to eq(0)
       expect(playerB.pawns[:"r:1"].pos).to eq([2, 3])
       expect(playerB.pawns[:"r:1"].is_active).to eq(false)
-
+      
       expect(game_win.board).to eq(
         [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
