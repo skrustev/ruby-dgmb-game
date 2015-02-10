@@ -1,7 +1,7 @@
 require_relative "menu_button"
 require_relative "pawn_button"
 
-class UI
+class Menu
   attr_accessor :hidden, :buttons
   def initialize(window, hidden = false)
     @window = window
@@ -42,7 +42,7 @@ class UI
   end
 end
 
-class StartMenu < UI
+class StartMenu < Menu
   def initialize(window, hidden = false)
     super(window, hidden)
 
@@ -74,7 +74,7 @@ class StartMenu < UI
 
 end
 
-class SetupMenu < UI
+class SetupMenu < Menu
   def initialize(window, hidden = false)
     super(window, hidden)
 
@@ -163,7 +163,7 @@ class SetupMenu < UI
   end
 end
 
-class IngameUI < UI
+class IngameMenu < Menu
   def initialize(window, hidden = false)
     super(window, hidden)
 
@@ -212,6 +212,19 @@ class IngameUI < UI
     @hidden = false
   end
 
+  def add_pawn_buttons
+    @window.game_mode.players.each do |player_name, player|
+      player.pawns.each do |pawn_name, pawn|
+        self.add_pawn(pawn_name,
+                      pawn,
+                      Gosu::Image.new(@window, "images/#{player.color}_pawn.png", false),
+                      500,
+                      500,
+                      1)
+      end
+    end
+  end
+
   def add_exit_button(callback = lambda { @window.close })
     self.add_item("exit",
                   Gosu::Image.new(@window, "images/exit.png", false),
@@ -221,26 +234,7 @@ class IngameUI < UI
                   callback,
                   Gosu::Image.new(@window, "images/exit_hover.png", false))
   end
-
   
-
-  def add_pawn_buttons
-    puts "called"
-    @window.game_mode.players.each do |player_name, player|
-      puts "For player " + player_name.to_s
-      player.pawns.each do |pawn_name, pawn|
-        puts "Adding pawn " + pawn_name.to_s
-        self.add_pawn(pawn_name,
-                      pawn,
-                      Gosu::Image.new(@window, "images/#{player.color}_pawn.png", false),
-                      500,
-                      500,
-                      1)
-      end
-    end
-    puts "ended"
-  end
-
   protected
 
   def add_pawn(name, pawn_object, image, x, y, z)

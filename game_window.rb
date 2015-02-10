@@ -4,7 +4,7 @@ require_relative 'lib/menu.rb'
 
 class GameWindow < Gosu::Window
   attr_accessor :game_mode, :start_menu, :setup_menu,
-                :ingame_ui, :block_size
+                :ingame_menu, :block_size
   WIDTH = 1280
   HEIGHT = 960
 
@@ -15,7 +15,7 @@ class GameWindow < Gosu::Window
 
     @start_menu = StartMenu.new(self)
     @setup_menu = SetupMenu.new(self, true)
-    @ingame_ui = IngameUI.new(self, true)
+    @ingame_menu = IngameMenu.new(self, true)
     
     @game_mode = GameMode.new
     @players_already_added = false
@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
 
     start_menu_add_buttons
     setup_menu_add_buttons
-    ingame_ui_add_buttons
+    ingame_menu_add_buttons
   end
 
   def update
@@ -31,8 +31,8 @@ class GameWindow < Gosu::Window
       @start_menu.update
     elsif !@setup_menu.hidden
       @setup_menu.update
-    elsif !@ingame_ui.hidden
-      @ingame_ui.update  
+    elsif !@ingame_menu.hidden
+      @ingame_menu.update  
     end
   end
 
@@ -45,8 +45,8 @@ class GameWindow < Gosu::Window
       @start_menu.draw
     elsif !@setup_menu.hidden
       @setup_menu.draw
-    elsif !@ingame_ui.hidden
-      @ingame_ui.draw  
+    elsif !@ingame_menu.hidden
+      @ingame_menu.draw  
     end
   end
 
@@ -56,8 +56,8 @@ class GameWindow < Gosu::Window
         @start_menu.clicked
       elsif !@setup_menu.hidden
         @setup_menu.clicked
-      elsif !@ingame_ui.hidden
-        @ingame_ui.clicked        
+      elsif !@ingame_menu.hidden
+        @ingame_menu.clicked        
       end
     end
   end
@@ -82,8 +82,8 @@ class GameWindow < Gosu::Window
     begin_callback = lambda do 
                               self.game_mode_add_players
                               self.setup_menu.hide
-                              self.ingame_ui.unhide
-                              self.ingame_ui.add_pawn_buttons
+                              self.ingame_menu.unhide
+                              self.ingame_menu.add_pawn_buttons
                             end
     @setup_menu.add_begin_button(begin_callback)
 
@@ -96,14 +96,14 @@ class GameWindow < Gosu::Window
     
   end
 
-  def ingame_ui_add_buttons
+  def ingame_menu_add_buttons
     back_callback  = lambda do
-                              self.ingame_ui.hide
+                              self.ingame_menu.hide
                               self.start_menu.unhide
                               self.clear_game
                             end
 
-    @ingame_ui.add_exit_button(back_callback)
+    @ingame_menu.add_exit_button(back_callback)
   end
 
   def game_mode_add_players
