@@ -67,10 +67,10 @@ class GameWindow < Gosu::Window
   end
 
   def start_menu_add_buttons
-    start_callback = lambda do
-                              self.start_menu.hide
-                              self.setup_menu.unhide
-                            end
+    start_callback =  lambda do
+                        self.start_menu.hide
+                        self.setup_menu.unhide
+                      end
     @start_menu.add_start_button(start_callback)
     @start_menu.add_exit_button
   end
@@ -79,31 +79,60 @@ class GameWindow < Gosu::Window
     @setup_menu.add_selection_message
     @setup_menu.add_player_select_buttons
 
-    begin_callback = lambda do 
-                              self.game_mode_add_players
-                              self.setup_menu.hide
-                              self.ingame_menu.unhide
-                              self.ingame_menu.add_pawn_buttons
-                            end
+    pawns_callback =  lambda do |pawn_name|
+                        player = @game_mode.players[:"#{@game_mode.turn}"]
+                        result = @game_mode.select_pawn(pawn_name)
+                        puts player.name + " last roll = " + player.last_roll.to_s
+                        puts "Actual roll = " + @game_mode.turn_roll.to_s
+                        unless result.is_a?(String)
+                          if(result.is_active)
+                            @game_mode.move_selected_pawn
+                          else
+                            @game_mode.activate_selected_pawn
+                          end
+                        end
+                      end
+
+    begin_callback =  lambda do 
+                        self.game_mode_add_players
+                        self.setup_menu.hide
+                        self.ingame_menu.unhide
+                        self.ingame_menu.add_pawn_buttons(pawns_callback)
+                      end
     @setup_menu.add_begin_button(begin_callback)
 
-    back_callback  = lambda do
-                              self.setup_menu.hide
-                              self.start_menu.unhide
-                              self.clear_game
-                            end
+    back_callback = lambda do
+                      self.setup_menu.hide
+                      self.start_menu.unhide
+                      self.clear_game
+                    end
     @setup_menu.add_back_button(back_callback)
-    
   end
 
   def ingame_menu_add_buttons
-    back_callback  = lambda do
-                              self.ingame_menu.hide
-                              self.start_menu.unhide
-                              self.clear_game
-                            end
+    roll_callback = lambda do
+                      player = @game_mode.players[:"#{@game_mode.turn}"]
+                      if @game_mode.can_roll
+                        rolled = player.roll_dice
+                        @game_mode.turn_roll = player.last_roll
+                        @game_mode.can_roll = false
+                        puts "Player " + @game_mode.turn + " rolled " + rolled.to_s
+                        if(rolled != 6 && player.active_pawns == 0 )
+                          @game_mode.next_turn
+                        end
+                      end
+                    end
+    @ingame_menu.add_roll_button(roll_callback)
 
+    back_callback = lambda do
+                      self.ingame_menu.hide
+                      self.start_menu.unhide
+                      self.clear_game
+                    end
     @ingame_menu.add_exit_button(back_callback)
+
+    @ingame_menu.add_turn_info
+    @ingame_menu.add_roll_info
   end
 
   def game_mode_add_players
@@ -122,8 +151,8 @@ class GameWindow < Gosu::Window
                 when "green"  then Player.new("player4", "green")
                 end
       @game_mode.add_player(player)
-      @players_already_added = true
     end
+      @players_already_added = true
   end
 
   def clear_game

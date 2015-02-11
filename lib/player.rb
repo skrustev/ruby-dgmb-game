@@ -1,7 +1,7 @@
 require_relative 'pawn'
 
 class Player
-  attr_accessor :last_roll
+  attr_accessor :last_roll, :has_rolled
   attr_reader :name, :color, :initial_pos, :start_pos,
               :active_pawns, :finished_pawns,
               :pawns, :path
@@ -14,6 +14,7 @@ class Player
     @active_pawns = 0
     @finished_pawns = 0
     @last_roll = 0
+    @has_rolled = false
     @pawns = {}
     @path = []
 
@@ -70,7 +71,9 @@ class Player
   end
   
   def roll_dice
-    @last_roll = 1 + rand(6)
+    @has_rolled = true
+    roll = 1 + rand(6)
+    @last_roll = roll
   end
 
   def activate_pawn(pawn_name)

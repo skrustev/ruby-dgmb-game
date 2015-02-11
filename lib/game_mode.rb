@@ -1,7 +1,8 @@
 require_relative './player'
 
 class GameMode
-  attr_reader  :board, :turn, :players, :selected_pawn
+  attr_accessor :turn_roll, :can_roll
+  attr_reader  :board, :turn, :players, :selected_pawn, :turn_sequence
   def initialize(start_turn = "player1", players = {})
     @board =
       [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
@@ -20,11 +21,13 @@ class GameMode
        [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
        [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
     @players = players
-    @turn = start_turn
     @turn_sequence = []
     @selected_pawn = Pawn.new
 
     set_turn_sequence
+    @turn = @turn_sequence[0]
+    @can_roll = true
+    @turn_roll = 0
   end
 
   def set_turn_sequence(turn_sequence = nil)
@@ -36,8 +39,13 @@ class GameMode
       end
     end
   end
-
+  
   def next_turn
+    @turn_roll = 0
+    @can_roll = true
+    player_this_turn = @players[:"#{@turn}"]
+    player_this_turn.last_roll = 0
+    
     if(@turn_sequence.index(@turn) == @turn_sequence.size - 1)
       @turn = @turn_sequence[0]
     else
@@ -49,9 +57,11 @@ class GameMode
   def add_player(player)
     @players[:"player#{players.size + 1}"] = player
 
-    unless @turn_sequence.include?("player#{players.size + 1}")
-      @turn_sequence << "player#{players.size + 1}"
+    unless @turn_sequence.include?("player#{players.size}")
+      @turn_sequence << "#{player.name}"
     end
+
+    @turn = @turn_sequence[0]
   end
 
   def select_pawn(pawn_name)
@@ -73,6 +83,7 @@ class GameMode
       @selected_pawn = pawn_to_select
     end
 
+    @selected_pawn
   end
 
   def activate_selected_pawn
@@ -83,6 +94,9 @@ class GameMode
       @board[pawn_pos[0]][pawn_pos[1]].delete(@selected_pawn.name)
       @players[:"#{@turn}"].activate_pawn(@selected_pawn.name)
       handle_if_steps_on_pawn(start_pos)
+      @players[:"#{@turn}"].last_roll = 0
+      @turn_roll = 0
+      @can_roll = true
     else
       puts "Please select a pawn"
     end
@@ -229,7 +243,10 @@ private
     player_this_turn = @players[:"#{@turn}"]
     if player_this_turn.last_roll == 6
       "You can roll once more"
-    else
+      player_this_turn.last_roll = 0
+      @turn_roll = 0
+      @can_roll = true
+    elsif player_this_turn.last_roll != 0
       next_turn
     end
   end

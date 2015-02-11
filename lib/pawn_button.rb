@@ -1,16 +1,18 @@
 class PawnButton
   attr_accessor :x, :y
 
-  def initialize(window, pawn, image, x, y, z)
+  def initialize(window, pawn, image, x, y, z, callback)
     @window = window
     @pawn = pawn
     @main_image = image
     @active_image = @main_image
+    @callback = callback
     @x = x
     @y = y
     @z = z
     @x_offset = (@window.width / 4) + 32
     @y_offset = 32
+
   end
 
   def draw
@@ -31,8 +33,7 @@ class PawnButton
 
   def clicked
     if is_mouse_hovering
-      puts "Clicked on " + @pawn.name + ' on positions: [' + @pawn.pos[0].to_s + "," + @pawn.pos[1].to_s + ']'
-      @window.game_mode.select_pawn(@pawn.name)
+      @callback.call @pawn.name
     end
   end
 end
