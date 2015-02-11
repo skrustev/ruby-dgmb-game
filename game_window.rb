@@ -83,7 +83,6 @@ class GameWindow < Gosu::Window
                         player = @game_mode.players[:"#{@game_mode.turn}"]
                         result = @game_mode.select_pawn(pawn_name)
                         puts player.name + " last roll = " + player.last_roll.to_s
-                        puts "Actual roll = " + @game_mode.turn_roll.to_s
                         unless result.is_a?(String)
                           if(result.is_active)
                             @game_mode.move_selected_pawn
@@ -114,7 +113,6 @@ class GameWindow < Gosu::Window
                       player = @game_mode.players[:"#{@game_mode.turn}"]
                       if @game_mode.can_roll
                         rolled = player.roll_dice
-                        @game_mode.turn_roll = player.last_roll
                         @game_mode.can_roll = false
                         puts "Player " + @game_mode.turn + " rolled " + rolled.to_s
                         if(rolled != 6 && player.active_pawns == 0 )
@@ -157,6 +155,7 @@ class GameWindow < Gosu::Window
 
   def clear_game
     @players_already_added = false
+    @game_mode.restart_game
     @game_mode.clear_game
   end
 end

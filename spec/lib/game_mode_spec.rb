@@ -2,10 +2,10 @@ require 'rspec/its'
 require 'game_mode'
 
 describe 'GameMode' do
-  player1 = Player.new("Gosho", "blue")
-  player2 = Player.new("Tosho", "red")
-  player3 = Player.new("Pesho", "yellow")
-  player4 = Player.new("Ivo", "green")
+  player1 = Player.new("player1", "blue")
+  player2 = Player.new("player2", "red")
+  player3 = Player.new("player3", "yellow")
+  player4 = Player.new("player4", "green")
   players = { :"player1" => player1,
               :"player2" => player2,
               :"player3" => player3,
@@ -121,7 +121,7 @@ describe 'GameMode' do
     end
 
     it "can select 4 non active pawns when rolled 6" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
 
       expect(game_blue_start.select_pawn("b:0")).to eq(player1.pawns[:"b:0"])
       expect(game_blue_start.select_pawn("b:1")).to eq(player1.pawns[:"b:1"])
@@ -131,7 +131,7 @@ describe 'GameMode' do
 
     it "cannot select 4 non active pawns when not rolled 6" do
       expect(game_blue_start.turn).to eq("player1")
-      game_blue_start.turn_roll = 3
+      player1.last_roll = 3
 
       expect(game_blue_start.select_pawn("b:0")).to eq("Cannot select this pawn. You need to roll 6!")
       expect(game_blue_start.select_pawn("b:1")).to eq("Cannot select this pawn. You need to roll 6!")
@@ -140,7 +140,7 @@ describe 'GameMode' do
     end
 
     it "can activate pawn 1" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       
       expect(game_blue_start.players[:"player1"].pawns[:"b:1"].is_active).to eq(false)
       game_blue_start.select_pawn("b:1")
@@ -171,7 +171,7 @@ describe 'GameMode' do
     end
 
     it "can activate pawn 2" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       
       game_blue_start.select_pawn("b:2")
       expect(game_blue_start.selected_pawn.name).to eq("b:2")
@@ -201,11 +201,11 @@ describe 'GameMode' do
     end
 
     it "can select only 1 active pawn and not 3 non active" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       expect(game_blue_start.select_pawn("b:1")).to eq(player1.pawns[:"b:1"])
       game_blue_start.activate_selected_pawn
 
-      game_blue_start.turn_roll = 4
+      player1.last_roll = 4
 
       expect(game_blue_start.select_pawn("b:0")).to eq("Cannot select this pawn. You need to roll 6!")
       expect(game_blue_start.select_pawn("b:1")).to eq(player1.pawns[:"b:1"])
@@ -215,7 +215,7 @@ describe 'GameMode' do
     end
 
     it "can destroy pawn at position" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:0")
       expect(game_blue_start.selected_pawn.pos).to eq([2, 11])
 
@@ -261,14 +261,14 @@ describe 'GameMode' do
     end
 
     it "can move pawn" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       expect(game_blue_start.selected_pawn.pos).to eq([2, 12])
 
       game_blue_start.activate_selected_pawn
       expect(game_blue_start.selected_pawn.pos).to eq([0, 6])
 
-      game_blue_start.turn_roll = 4
+      player1.last_roll = 4
       game_blue_start.select_pawn("b:1")
       expect(game_blue_start.selected_pawn.pos).to eq([0, 6])
       game_blue_start.move_selected_pawn
@@ -293,7 +293,7 @@ describe 'GameMode' do
       expect(game_blue_start.turn).to eq("player2")
 
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       expect(game_blue_start.selected_pawn.pos).to eq([4, 6])
       game_blue_start.move_selected_pawn
@@ -321,14 +321,14 @@ describe 'GameMode' do
     end
 
     it "cannot move inactive pawn when rolled 6" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       
       expect(game_blue_start.move_selected_pawn).to eq("You need to activate this pawn first")
     end
 
     it "can finish pawn" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:2")
       expect(game_blue_start.selected_pawn.name).to eq("b:2")
       expect(game_blue_start.selected_pawn.pos).to eq([3, 11])
@@ -340,13 +340,13 @@ describe 'GameMode' do
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].each do
         game_blue_start.override_turn("player1")
-        game_blue_start.turn_roll = 5
+        player1.last_roll = 5
         game_blue_start.select_pawn("b:0")
         game_blue_start.move_selected_pawn
       end
 
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 2
+      player1.last_roll = 2
       game_blue_start.select_pawn("b:0")
       game_blue_start.move_selected_pawn
 
@@ -354,7 +354,7 @@ describe 'GameMode' do
       #should roll exactly 4
       #roll 4
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 4
+      player1.last_roll = 4
       expect(game_blue_start.select_pawn("b:0")).to eq(player1.pawns[:"b:0"])
       game_blue_start.move_selected_pawn
 
@@ -380,7 +380,7 @@ describe 'GameMode' do
     end
 
     it "cannot finish pawn when not rolled proper number" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:2")
       expect(game_blue_start.selected_pawn.name).to eq("b:2")
       expect(game_blue_start.selected_pawn.pos).to eq([3, 11])
@@ -392,13 +392,13 @@ describe 'GameMode' do
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].each do
         game_blue_start.override_turn("player1")
-        game_blue_start.turn_roll = 5
+        player1.last_roll = 5
         game_blue_start.select_pawn("b:0")
         game_blue_start.move_selected_pawn
       end
 
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 3
+      player1.last_roll = 3
       game_blue_start.select_pawn("b:0")
       game_blue_start.move_selected_pawn
 
@@ -407,14 +407,14 @@ describe 'GameMode' do
       #should roll exactly 3
       #roll 5
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 5
+      player1.last_roll = 5
       game_blue_start.select_pawn("b:0")
 
       expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 3 to use this pawn")
 
       #roll 4
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 4
+      player1.last_roll = 4
       game_blue_start.select_pawn("b:0")
 
       expect(game_blue_start.select_pawn("b:0")).to eq("You need to roll 3 to use this pawn")
@@ -423,13 +423,13 @@ describe 'GameMode' do
     end
 
     it "can destroy pawn when stepped on it" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       game_blue_start.activate_selected_pawn
 
       expect(game_blue_start.turn).to eq("player1")
       
-      game_blue_start.turn_roll = 1
+      player1.last_roll = 1
       game_blue_start.move_selected_pawn
 
       expect(game_blue_start.board).to eq(
@@ -452,18 +452,18 @@ describe 'GameMode' do
       expect(game_blue_start.turn).to eq("player2")
 
       game_blue_start.override_turn("player4")
-      game_blue_start.turn_roll = 6
+      player4.last_roll = 6
       game_blue_start.select_pawn("g:0")
       game_blue_start.activate_selected_pawn
 
       [1,2].each do
         game_blue_start.override_turn("player4")
-        game_blue_start.turn_roll = 6
+        player4.last_roll = 6
         game_blue_start.move_selected_pawn
       end
 
       game_blue_start.override_turn("player4")
-      game_blue_start.turn_roll = 5
+      player4.last_roll = 5
       game_blue_start.move_selected_pawn
 
       expect(game_blue_start.board).to eq(
@@ -485,7 +485,7 @@ describe 'GameMode' do
       )
       expect(game_blue_start.turn).to eq("player1")
 
-      game_blue_start.turn_roll = 2
+      player1.last_roll = 2
       game_blue_start.select_pawn("b:1")
       game_blue_start.move_selected_pawn
 
@@ -511,7 +511,7 @@ describe 'GameMode' do
     end
 
     it "can activate 2 pawns at one position and destroy them" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       game_blue_start.activate_selected_pawn
 
@@ -534,7 +534,7 @@ describe 'GameMode' do
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
       )
 
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:3")
       game_blue_start.activate_selected_pawn
 
@@ -596,11 +596,11 @@ describe 'GameMode' do
     end
 
     it "can move 2 pawns to same position" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       game_blue_start.activate_selected_pawn
 
-      game_blue_start.turn_roll = 4
+      player1.last_roll = 4
       game_blue_start.select_pawn("b:1")
       game_blue_start.move_selected_pawn
 
@@ -623,11 +623,11 @@ describe 'GameMode' do
       )
 
       game_blue_start.override_turn("player1")
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:2")
       game_blue_start.activate_selected_pawn
 
-      game_blue_start.turn_roll = 4
+      player1.last_roll = 4
       game_blue_start.select_pawn("b:2")
       game_blue_start.move_selected_pawn
 
@@ -654,15 +654,15 @@ describe 'GameMode' do
     end
 
     it "can move the proper pawn when 2 pawns at one position" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       game_blue_start.activate_selected_pawn
 
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:3")
       game_blue_start.activate_selected_pawn
 
-      game_blue_start.turn_roll = 3
+      player1.last_roll = 3
       game_blue_start.select_pawn("b:3")
       game_blue_start.move_selected_pawn
 
@@ -689,21 +689,21 @@ describe 'GameMode' do
     end
 
     it "can destroy 2 pawns when stepping on them" do
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       game_blue_start.activate_selected_pawn
 
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:3")
       game_blue_start.activate_selected_pawn
 
       game_blue_start.override_turn("player4")
-      game_blue_start.turn_roll = 6
+      player4.last_roll = 6
       game_blue_start.select_pawn("g:1")
       game_blue_start.activate_selected_pawn
 
       [1, 2].each do
-        game_blue_start.turn_roll = 6
+        player4.last_roll = 6
         game_blue_start.select_pawn("g:1")
         game_blue_start.move_selected_pawn
       end
@@ -726,7 +726,7 @@ describe 'GameMode' do
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
       )
 
-      game_blue_start.turn_roll = 2
+      player4.last_roll = 2
       game_blue_start.select_pawn("g:1")
       game_blue_start.move_selected_pawn
 
@@ -751,17 +751,17 @@ describe 'GameMode' do
 
     it "pawn when activated can destroy enemy pawn on starting position" do
       game_blue_start.override_turn("player4")
-      game_blue_start.turn_roll = 6
+      player4.last_roll = 6
       game_blue_start.select_pawn("g:2")
       game_blue_start.activate_selected_pawn
 
       [1, 2].each do
-        game_blue_start.turn_roll = 6
+        player4.last_roll = 6
         game_blue_start.select_pawn("g:2")
         game_blue_start.move_selected_pawn
       end
 
-      game_blue_start.turn_roll = 2
+      player4.last_roll = 2
       game_blue_start.select_pawn("g:2")
       game_blue_start.move_selected_pawn
 
@@ -784,7 +784,7 @@ describe 'GameMode' do
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]]
       )
 
-      game_blue_start.turn_roll = 6
+      player1.last_roll = 6
       game_blue_start.select_pawn("b:1")
       game_blue_start.activate_selected_pawn
 
@@ -827,47 +827,47 @@ describe 'GameMode' do
 
       #finishing 3 pawns for player4 
       game_win.override_turn("player4")
-      game_win.turn_roll = 6
+      playerD.last_roll = 6
       game_win.select_pawn("g:0")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerD.last_roll = 6
         game_win.select_pawn("g:0")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerD.last_roll = 1
       game_win.select_pawn("g:0")
       game_win.move_selected_pawn
 
       game_win.override_turn("player4")
-      game_win.turn_roll = 6
+      playerD.last_roll = 6
       game_win.select_pawn("g:1")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerD.last_roll = 6
         game_win.select_pawn("g:1")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerD.last_roll = 1
       game_win.select_pawn("g:1")
       game_win.move_selected_pawn
 
       game_win.override_turn("player4")
-      game_win.turn_roll = 6
+      playerD.last_roll = 6
       game_win.select_pawn("g:2")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerD.last_roll = 6
         game_win.select_pawn("g:2")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerD.last_roll = 1
       game_win.select_pawn("g:2")
       game_win.move_selected_pawn
 
@@ -878,47 +878,48 @@ describe 'GameMode' do
       #finishing 3 pawns for player2
       game_win.override_turn("player2")
       expect(game_win.turn).to eq("player2")
-      game_win.turn_roll = 6
+      playerB.last_roll = 6
       game_win.select_pawn("r:0")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerB.last_roll = 6
         game_win.select_pawn("r:0")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerB.last_roll = 1
       game_win.select_pawn("r:0")
       game_win.move_selected_pawn
 
       game_win.override_turn("player2")
-      game_win.turn_roll = 6
+      playerB.last_roll = 6
       game_win.select_pawn("r:1")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerB.last_roll = 6
         game_win.select_pawn("r:1")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerB.last_roll = 1
       game_win.select_pawn("r:1")
       game_win.move_selected_pawn
 
       game_win.override_turn("player2")
-      game_win.turn_roll = 6
+      playerB.last_roll = 6
       game_win.select_pawn("r:2")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerB.last_roll = 6
         game_win.select_pawn("r:2")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+
+      playerB.last_roll = 1
       game_win.select_pawn("r:2")
       game_win.move_selected_pawn
       # player2 3 pawns finished
@@ -942,17 +943,17 @@ describe 'GameMode' do
       )
       #finishing last pawn for player4
       game_win.override_turn("player4")
-      game_win.turn_roll = 6
+      playerD.last_roll = 6
       game_win.select_pawn("g:3")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerD.last_roll = 6
         game_win.select_pawn("g:3")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerD.last_roll = 1
       game_win.select_pawn("g:3")
       game_win.move_selected_pawn
 
@@ -983,28 +984,28 @@ describe 'GameMode' do
 
     it "restart game and players with 1 finished and 1 active pawn" do
       #playerA has 1 finished pawn
-      game_win.turn_roll = 6
+      playerA.last_roll = 6
       game_win.select_pawn("b:0")
       game_win.activate_selected_pawn
 
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].each do
-        game_win.turn_roll = 6
+        playerA.last_roll = 6
         game_win.select_pawn("b:0")
         game_win.move_selected_pawn
       end
 
-      game_win.turn_roll = 1
+      playerA.last_roll = 1
       game_win.select_pawn("b:0")
       game_win.move_selected_pawn
 
       expect(playerA.pawns[:"b:0"].is_finished).to eq(true)
 
       #playerB has 1 active pawn
-      game_win.turn_roll = 6
+      playerB.last_roll = 6
       game_win.select_pawn("r:1")
       game_win.activate_selected_pawn
 
-      game_win.turn_roll = 5
+      playerB.last_roll = 5
       game_win.select_pawn("r:1")
       game_win.move_selected_pawn
 

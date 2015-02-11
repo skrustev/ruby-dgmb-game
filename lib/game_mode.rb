@@ -1,7 +1,7 @@
 require_relative './player'
 
 class GameMode
-  attr_accessor :turn_roll, :can_roll
+  attr_accessor :can_roll
   attr_reader  :board, :turn, :players, :selected_pawn, :turn_sequence
   def initialize(start_turn = "player1", players = {})
     @board =
@@ -27,7 +27,6 @@ class GameMode
     set_turn_sequence
     @turn = @turn_sequence[0]
     @can_roll = true
-    @turn_roll = 0
   end
 
   def set_turn_sequence(turn_sequence = nil)
@@ -41,7 +40,6 @@ class GameMode
   end
   
   def next_turn
-    @turn_roll = 0
     @can_roll = true
     player_this_turn = @players[:"#{@turn}"]
     player_this_turn.last_roll = 0
@@ -55,9 +53,9 @@ class GameMode
   end
 
   def add_player(player)
-    @players[:"player#{players.size + 1}"] = player
+    @players[:"#{player.name}"] = player
 
-    unless @turn_sequence.include?("player#{players.size}")
+    unless @turn_sequence.include?("#{player.name}")
       @turn_sequence << "#{player.name}"
     end
 
@@ -95,7 +93,6 @@ class GameMode
       @players[:"#{@turn}"].activate_pawn(@selected_pawn.name)
       handle_if_steps_on_pawn(start_pos)
       @players[:"#{@turn}"].last_roll = 0
-      @turn_roll = 0
       @can_roll = true
     else
       puts "Please select a pawn"
@@ -244,7 +241,6 @@ private
     if player_this_turn.last_roll == 6
       "You can roll once more"
       player_this_turn.last_roll = 0
-      @turn_roll = 0
       @can_roll = true
     elsif player_this_turn.last_roll != 0
       next_turn
