@@ -1,4 +1,5 @@
 require_relative './player'
+require_relative './ai'
 
 class GameMode
   attr_accessor :can_roll
@@ -40,6 +41,8 @@ class GameMode
   end
   
   def next_turn
+    return if have_winner[0]
+
     @can_roll = true
     player_this_turn = @players[:"#{@turn}"]
     player_this_turn.last_roll = 0
@@ -49,6 +52,12 @@ class GameMode
     else
       index_next_turn = @turn_sequence.index(@turn) + 1
       @turn = @turn_sequence[index_next_turn]
+    end
+
+    #check if it's AI next
+    player_this_turn = @players[:"#{@turn}"]
+    if player_this_turn.is_a?(AI)
+      ai_action
     end
   end
 
@@ -63,6 +72,8 @@ class GameMode
   end
 
   def select_pawn(pawn_name)
+    return if have_winner[0]
+
     player_this_turn = @players[:"#{@turn}"]
 
     if(player_this_turn.pawns.include?(:"#{pawn_name}") == false)
@@ -97,6 +108,8 @@ class GameMode
     else
       puts "Please select a pawn"
     end
+
+    ai_action if @players[:"#{@turn}"].is_a?(AI)
   end
 
   def move_selected_pawn
@@ -141,6 +154,27 @@ class GameMode
     
   end
 
+  def ai_action
+    ai_this_turn = @players[:"#{@turn}"]
+    roll = ai_this_turn.roll_dice
+    chosen_pawn = ai_this_turn.choose_pawn
+
+    if chosen_pawn.empty?
+      next_turn
+      return
+    end
+
+    select_pawn(chosen_pawn[0])
+
+    puts "AI rolled " + roll.to_s
+    puts "AI chose pawn " + chosen_pawn.to_s
+    if chosen_pawn[1] == "to_activate"
+      activate_selected_pawn
+    elsif chosen_pawn[1] == "to_move"
+      move_selected_pawn
+    end
+  end
+
   def override_turn(new_player_turn)
     @turn = new_player_turn
   end
@@ -149,7 +183,7 @@ class GameMode
     result = [false, ""]
     @players.each do |name, player|
       if player.finished_pawns == 4
-        result = [true, player.name]
+        result = [true, player.color]
         return result
       end
     end
@@ -242,6 +276,8 @@ private
       "You can roll once more"
       player_this_turn.last_roll = 0
       @can_roll = true
+
+      ai_action if player_this_turn.is_a?(AI)
     elsif player_this_turn.last_roll != 0
       next_turn
     end

@@ -97,6 +97,11 @@ class GameWindow < Gosu::Window
                         self.setup_menu.hide
                         self.ingame_menu.unhide
                         self.ingame_menu.add_pawn_buttons(pawns_callback)
+
+                        #if first is AI, make sure to activate it
+                        if @game_mode.players[:"#{@game_mode.turn}"].is_a?(AI)
+                          @game_mode.ai_action
+                        end
                       end
     @setup_menu.add_begin_button(begin_callback)
 
@@ -139,17 +144,30 @@ class GameWindow < Gosu::Window
       return
     end
 
-    players_selected = @setup_menu.get_players_selected
+    selected = @setup_menu.get_players_ai_selected
 
-    players_selected.each do |player_color|
-      player =  case player_color
-                when "blue"   then Player.new("player1", "blue")
-                when "red"    then Player.new("player2", "red")
-                when "yellow" then Player.new("player3", "yellow")
-                when "green"  then Player.new("player4", "green")
-                end
-      @game_mode.add_player(player)
+    selected.each do |player_color, type|
+      if type == "player"
+        player =  case player_color
+                  when "blue"   then Player.new("player1", "blue")
+                  when "red"    then Player.new("player2", "red")
+                  when "yellow" then Player.new("player3", "yellow")
+                  when "green"  then Player.new("player4", "green")
+                  end
+
+        @game_mode.add_player(player)
+      elsif type == "ai"
+        ai =  case player_color
+                  when "blue"   then AI.new(@game_mode, "player1", "blue")
+                  when "red"    then AI.new(@game_mode, "player2", "red")
+                  when "yellow" then AI.new(@game_mode, "player3", "yellow")
+                  when "green"  then AI.new(@game_mode, "player4", "green")
+                  end
+
+        @game_mode.add_player(ai)
+      end
     end
+
       @players_already_added = true
   end
 

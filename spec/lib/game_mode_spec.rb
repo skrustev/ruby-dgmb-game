@@ -959,7 +959,7 @@ describe 'GameMode' do
 
       expect(playerD.finished_pawns).to eq(4)
       expect(playerD.active_pawns).to eq(0)
-      expect(game_win.have_winner).to eq([true, "player4"])
+      expect(game_win.have_winner).to eq([true, "green"])
       expect(game_win.board).to eq(
         [[[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
          [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
