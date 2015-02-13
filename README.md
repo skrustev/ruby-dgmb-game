@@ -10,7 +10,7 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 
 2. Run Don'tGetMadBro.exe
 
-## How to Install for Unix/Linux/OSX/Win
+## How to Install for Unix/Linux/Win
 1. Download and install latest ruby.
  * Installer For Windows: http://rubyinstaller.org/ (Tick Add Ruby executables to your PATH)
  * For Unix/Linux install [rbenv](https://github.com/sstephenson/rbenv#installation)
@@ -19,11 +19,10 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 
 3. Open your console
 4. Execute
- 
+
 	```
 	gem install bundler
 	```
-	
 **Note:** If you are having problem with SSL and it says that there's a problem connecting to the gem site see here for updating the gem version - [link](https://gist.github.com/luislavena/f064211759ee0f806c88)
 5. Navigate using command 'cd' to your cloned repo main folder.
 
@@ -36,7 +35,6 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 	```
 	ruby game_window.rb
 	```
-
 
 ## Rules:
 **Goals of the game:**
