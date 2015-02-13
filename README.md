@@ -5,10 +5,36 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 
 [Screenshot_1](http://gyazo.com/fb5a8dcd729bb2bf2416ac0c30c4b448.png) [Screnshot_2](http://gyazo.com/4034bcfa4820786f02eb812381d11554.png)
 
-## How To Play
+## How To Play(only Windows)
 1. Clone or download this repo in a desired folder
 
 2. Run Don'tGetMadBro.exe
+
+## How to Install for Unix/Linux/Win
+1. Download and install latest ruby.
+ * Installer For Windows: http://rubyinstaller.org/ (Tick Add Ruby executables to your PATH)
+ * For Unix/Linux install [rbenv](https://github.com/sstephenson/rbenv#installation)
+  
+2. Clone this repo in a desired folder
+
+3. Open your console
+4. Execute
+
+	```
+	gem install bundler
+	```
+**Note:** If you are having problem with SSL and it says that there's a problem connecting to the gem site see here for updating the gem version - [link](https://gist.github.com/luislavena/f064211759ee0f806c88)
+5. Navigate using command 'cd' to your cloned repo main folder.
+
+6. Run the following command to install the dependencies:
+	```
+	bundle
+	```
+7. To start the game use:
+
+	```
+	ruby game_window.rb
+	```
 
 ## Rules:
 **Goals of the game:**
