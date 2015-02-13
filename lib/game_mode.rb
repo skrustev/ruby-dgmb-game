@@ -154,6 +154,8 @@ class GameMode
     
   end
 
+  
+
   def ai_action
     ai_this_turn = @players[:"#{@turn}"]
     roll = ai_this_turn.roll_dice
@@ -164,11 +166,18 @@ class GameMode
       return
     end
 
-    select_pawn(chosen_pawn[0])
-
     puts "AI rolled " + roll.to_s
     puts "AI chose pawn " + chosen_pawn.to_s
-    if chosen_pawn[1] == "to_activate"
+
+    result = select_pawn(chosen_pawn[0])
+
+    if result.is_a?(String)
+      ai_this_turn.pawns.each do |name, pawn|
+        ai_action unless select_pawn(name).is_a?(String)
+      end
+
+      next_turn
+    elsif chosen_pawn[1] == "to_activate"
       activate_selected_pawn
     elsif chosen_pawn[1] == "to_move"
       move_selected_pawn
@@ -277,7 +286,9 @@ private
       player_this_turn.last_roll = 0
       @can_roll = true
 
-      ai_action if player_this_turn.is_a?(AI)
+      if player_this_turn.is_a?(AI)
+        ai_action
+      end 
     elsif player_this_turn.last_roll != 0
       next_turn
     end

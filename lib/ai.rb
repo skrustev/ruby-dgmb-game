@@ -29,7 +29,7 @@ class AI < Player
         end
       end
 
-      chosen = [active[0], "to_move"]
+      chosen = [active[rand(active.size)], "to_move"]
     end
 
     chosen

@@ -1,10 +1,11 @@
 require 'gosu'
 require_relative 'lib/game_mode.rb'
 require_relative 'lib/menu.rb'
+require_relative 'lib/ingame_ui.rb'
 
 class GameWindow < Gosu::Window
   attr_accessor :game_mode, :start_menu, :setup_menu,
-                :ingame_menu, :block_size
+                :ingame_ui, :block_size
   WIDTH = 1280
   HEIGHT = 960
 
@@ -15,7 +16,7 @@ class GameWindow < Gosu::Window
 
     @start_menu = StartMenu.new(self)
     @setup_menu = SetupMenu.new(self, true)
-    @ingame_menu = IngameMenu.new(self, true)
+    @ingame_ui = IngameUi.new(self, true)
     
     @game_mode = GameMode.new
     @players_already_added = false
@@ -23,7 +24,7 @@ class GameWindow < Gosu::Window
 
     start_menu_add_buttons
     setup_menu_add_buttons
-    ingame_menu_add_buttons
+    ingame_ui_add_buttons
   end
 
   def update
@@ -31,8 +32,8 @@ class GameWindow < Gosu::Window
       @start_menu.update
     elsif !@setup_menu.hidden
       @setup_menu.update
-    elsif !@ingame_menu.hidden
-      @ingame_menu.update  
+    elsif !@ingame_ui.hidden
+      @ingame_ui.update  
     end
   end
 
@@ -45,8 +46,8 @@ class GameWindow < Gosu::Window
       @start_menu.draw
     elsif !@setup_menu.hidden
       @setup_menu.draw
-    elsif !@ingame_menu.hidden
-      @ingame_menu.draw  
+    elsif !@ingame_ui.hidden
+      @ingame_ui.draw  
     end
   end
 
@@ -56,8 +57,8 @@ class GameWindow < Gosu::Window
         @start_menu.clicked
       elsif !@setup_menu.hidden
         @setup_menu.clicked
-      elsif !@ingame_menu.hidden
-        @ingame_menu.clicked        
+      elsif !@ingame_ui.hidden
+        @ingame_ui.clicked        
       end
     end
   end
@@ -95,8 +96,8 @@ class GameWindow < Gosu::Window
     begin_callback =  lambda do 
                         self.game_mode_add_players
                         self.setup_menu.hide
-                        self.ingame_menu.unhide
-                        self.ingame_menu.add_pawn_buttons(pawns_callback)
+                        self.ingame_ui.unhide
+                        self.ingame_ui.add_pawn_buttons(pawns_callback)
 
                         #if first is AI, make sure to activate it
                         if @game_mode.players[:"#{@game_mode.turn}"].is_a?(AI)
@@ -113,29 +114,38 @@ class GameWindow < Gosu::Window
     @setup_menu.add_back_button(back_callback)
   end
 
-  def ingame_menu_add_buttons
+  def ingame_ui_add_buttons
     roll_callback = lambda do
                       player = @game_mode.players[:"#{@game_mode.turn}"]
                       if @game_mode.can_roll
                         rolled = player.roll_dice
                         @game_mode.can_roll = false
+
                         puts "Player " + @game_mode.turn + " rolled " + rolled.to_s
+
                         if(rolled != 6 && player.active_pawns == 0 )
                           @game_mode.next_turn
+                        elsif rolled != 6
+                          player.pawns.each do |name, pawn|
+                            return unless @game_mode.select_pawn(name).is_a?(String)
+                          end
+
+                          @game_mode.next_turn                                              
                         end
                       end
                     end
-    @ingame_menu.add_roll_button(roll_callback)
+    @ingame_ui.add_roll_button(roll_callback)
 
     back_callback = lambda do
-                      self.ingame_menu.hide
+                      self.ingame_ui.hide
                       self.start_menu.unhide
                       self.clear_game
                     end
-    @ingame_menu.add_exit_button(back_callback)
+    @ingame_ui.add_exit_button(back_callback)
 
-    @ingame_menu.add_turn_info
-    @ingame_menu.add_roll_info
+    @ingame_ui.add_turn_info
+    @ingame_ui.add_roll_info
+    @ingame_ui.add_win_info
   end
 
   def game_mode_add_players
