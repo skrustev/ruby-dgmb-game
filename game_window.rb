@@ -125,12 +125,20 @@ class GameWindow < Gosu::Window
 
                         if(rolled != 6 && player.active_pawns == 0 )
                           @game_mode.next_turn
-                        elsif rolled != 6
-                          player.pawns.each do |name, pawn|
-                            return unless @game_mode.select_pawn(name).is_a?(String)
+                        elsif rolled == 6 && player.active_pawns + player.finished_pawns == 4
+                          cannot_move = []
+                          player.pawns.each do |pawn_name, pawn|
+                            cannot_move << pawn_name if pawn.is_active && pawn.path_pos > 55
                           end
 
-                          @game_mode.next_turn                                              
+                          @game_mode.can_roll = true if cannot_move.size == player.active_pawns
+                        else
+                          player.pawns.each do |name, pawn|
+                            result = @game_mode.select_pawn(name)
+                            return unless result.is_a?(String) || !result.name
+                          end
+
+                          @game_mode.next_turn
                         end
                       end
                     end

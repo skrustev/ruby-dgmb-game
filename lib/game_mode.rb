@@ -86,7 +86,9 @@ class GameMode
 
     if(player_this_turn.last_roll != 6 && !pawn_to_select.is_active)
       return "Cannot select this pawn. You need to roll 6!"
-    elsif(pawn_to_select.is_active && pawn_to_select.path_pos >= 40 && roll_to_finish < player_this_turn.last_roll)
+    elsif(pawn_to_select.is_active && 
+          pawn_to_select.path_pos >= player_this_turn.path.size - 7 && 
+          roll_to_finish < player_this_turn.last_roll)
       return "You need to roll #{roll_to_finish} to use this pawn"
     else
       @selected_pawn = pawn_to_select
