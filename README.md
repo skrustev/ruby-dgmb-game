@@ -31,7 +31,7 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
 7. To start the game use:
 
 	```
-	ruby game.rb
+	ruby game_window.rb
 	```
 
 
