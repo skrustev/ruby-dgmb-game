@@ -15,22 +15,18 @@ A game about ᕙ༼ຈلຈ༽ᕗ HARDER BETTER FASTER DONGER ᕙ༼ຈلຈ༽�
  * Installer For Windows: http://rubyinstaller.org/ (Tick Add Ruby executables to your PATH)
  * For Unix/Linux install [rbenv](https://github.com/sstephenson/rbenv#installation)
   
-2. Clone this repo in a desired folder
+2. Download the zip of this repo and extract in a desired folder - [link](https://github.com/skrustev/ruby-dgmb-game/archive/master.zip)
 
 3. Open your console
 4. Execute
 
 	```
-	gem install bundler
+	gem install gosu
 	```
 **Note:** If you are having problem with SSL and it says that there's a problem connecting to the gem site see here for updating the gem version - [link](https://gist.github.com/luislavena/f064211759ee0f806c88)
-5. Navigate using command 'cd' to your cloned repo main folder.
+5. Navigate using command 'cd' to the game's main folder.
 
-6. Run the following command to install the dependencies:
-	```
-	bundle
-	```
-7. To start the game use:
+6. To start the game use:
 
 	```
 	ruby game_window.rb
